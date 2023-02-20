@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Table(name = "Walk")
 @Entity
 public class Walk extends BaseEntity {
 

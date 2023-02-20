@@ -4,6 +4,7 @@ import kugods.wonder.app.common.entity.BaseEntity;
 
 import javax.persistence.*;
 
+@Table(name = "Tier")
 @Entity
 public class Tier {
 

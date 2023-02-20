@@ -5,6 +5,7 @@ import kugods.wonder.app.record.entity.Tier;
 
 import javax.persistence.*;
 
+@Table(name = "User")
 @Entity
 public class User extends BaseEntity {
 

@@ -5,6 +5,7 @@ import kugods.wonder.app.common.entity.BaseEntity;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Table(name = "IntermediateLocation")
 @Entity
 public class IntermediateLocation extends BaseEntity {
 
