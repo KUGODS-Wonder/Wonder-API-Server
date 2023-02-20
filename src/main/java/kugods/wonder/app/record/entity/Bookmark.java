@@ -6,6 +6,8 @@ import kugods.wonder.app.walk.entity.Walk;
 
 import javax.persistence.*;
 
+@Table(name = "Bookmark")
+@Entity
 public class Bookmark extends BaseEntity {
 
     @Id
