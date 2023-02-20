@@ -5,7 +5,7 @@ import kugods.wonder.app.common.entity.BaseEntity;
 import javax.persistence.*;
 
 @Entity
-public class Tier extends BaseEntity {
+public class Tier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
