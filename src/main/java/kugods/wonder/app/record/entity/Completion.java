@@ -1,7 +1,7 @@
 package kugods.wonder.app.record.entity;
 
 import kugods.wonder.app.common.entity.BaseEntity;
-import kugods.wonder.app.user.entity.User;
+import kugods.wonder.app.user.entity.Member;
 import kugods.wonder.app.walk.entity.Walk;
 
 import javax.persistence.*;
@@ -20,7 +20,7 @@ public class Completion extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "walk_id")

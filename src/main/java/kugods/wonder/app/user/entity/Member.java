@@ -11,7 +11,7 @@ import javax.persistence.*;
 @ToString
 @Table(name = "User")
 @Entity
-public class User extends BaseEntity {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +38,9 @@ public class User extends BaseEntity {
     @JoinColumn(name = "tier_id")
     private Tier tier;
 
-    protected User() {}
+    protected Member() {}
 
-    protected User(String name, String address, String refreshToken, String email, String password, Tier tier){
+    protected Member(String name, String address, String refreshToken, String email, String password, Tier tier){
         this.name = name;
         this.address = address;
         this.refreshToken = refreshToken;
@@ -49,7 +49,7 @@ public class User extends BaseEntity {
         this.tier = tier;
     }
 
-    public static User of(String name, String address, String refreshToken, String email, String password, Tier tier) {
-        return new User(name, address, refreshToken, email,password, tier);
+    public static Member of(String name, String address, String refreshToken, String email, String password, Tier tier) {
+        return new Member(name, address, refreshToken, email,password, tier);
     }
 }
