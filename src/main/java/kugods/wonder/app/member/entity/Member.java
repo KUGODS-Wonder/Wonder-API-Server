@@ -1,4 +1,4 @@
-package kugods.wonder.app.user.entity;
+package kugods.wonder.app.member.entity;
 
 import kugods.wonder.app.common.entity.BaseEntity;
 import kugods.wonder.app.record.entity.Tier;
@@ -9,14 +9,14 @@ import javax.persistence.*;
 
 @Getter
 @ToString
-@Table(name = "User")
+@Table(name = "Member")
 @Entity
 public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "member_id")
+    private Long memberId;
 
     @Column(nullable = false)
     private String name;

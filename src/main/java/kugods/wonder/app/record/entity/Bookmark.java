@@ -1,7 +1,7 @@
 package kugods.wonder.app.record.entity;
 
 import kugods.wonder.app.common.entity.BaseEntity;
-import kugods.wonder.app.user.entity.Member;
+import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.walk.entity.Walk;
 
 import javax.persistence.*;
@@ -22,7 +22,7 @@ public class Bookmark extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
