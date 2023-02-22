@@ -1,6 +1,7 @@
 package kugods.wonder.app.common.constant;
 
 import kugods.wonder.app.common.exception.GeneralException;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,13 @@ public enum ErrorCode {
     VALIDATION_ERROR(10002, HttpStatus.BAD_REQUEST, "Validation error"),
 
     INTERNAL_ERROR(20000, HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
-    DATA_ACCESS_ERROR(20001, HttpStatus.INTERNAL_SERVER_ERROR, "Data access error")
-    ;
+    DATA_ACCESS_ERROR(20001, HttpStatus.INTERNAL_SERVER_ERROR, "Data access error"),
+
+    NOT_VALID_ROLE(1000, HttpStatus.BAD_REQUEST, "Invalid role"),
+    NOT_VALID_TOKEN(1001, HttpStatus.BAD_REQUEST, "Invalid token"),
+    NOT_VALID_PASSWORD(1002, HttpStatus.BAD_REQUEST, "Password does not match"),
+    MEMBER_DOES_NOT_EXIST(1003, HttpStatus.BAD_REQUEST , "Member does not exist"),
+    DUPLICATED_EMAIL(1004, HttpStatus.BAD_REQUEST, "Duplicated email");
 
     private final Integer code;
     private final HttpStatus httpStatus;
