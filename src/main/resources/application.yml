@@ -13,6 +13,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
 logging:
   level:
     org.hibernate.SQL: debug
@@ -20,5 +24,5 @@ logging:
 
 jwt:
   header: Authorization
-  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1siAb2g90LzWp3dxC10dsXRwvcmlhbC1zZWNyZXr2Qtc2lsdmVyEksdn123NoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWN123yZXQK
+  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
   token-validity-in-seconds: 86400
