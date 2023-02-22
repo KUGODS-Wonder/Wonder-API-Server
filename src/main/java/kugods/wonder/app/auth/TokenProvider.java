@@ -1,94 +1,89 @@
 package kugods.wonder.app.auth;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
+import kugods.wonder.app.member.entity.Authority;
+import kugods.wonder.app.member.service.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.stream.Collectors;
+import java.util.List;
 
+@RequiredArgsConstructor
 @Component
-public class TokenProvider implements InitializingBean {
+public class TokenProvider {
 
-    private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
-    private static final String AUTHORITIES_KEY = "auth";
-    private final String secret;
-    private final long tokenValidityInMilliseconds;
-    private Key key;
+    @Value("${jwt.secret}")
+    private String salt;
 
-    public TokenProvider(
-            @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
-        this.secret = secret;
-        this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
+    private Key secretKey;
+
+    // 만료시간 : 1Hour
+    private final long exp = 1000L * 60 * 60;
+
+    private final CustomUserDetailsService userDetailsService;
+
+    @PostConstruct
+    protected void init() {
+        secretKey = Keys.hmacShaKeyFor(salt.getBytes(StandardCharsets.UTF_8));
     }
 
-    @Override
-    public void afterPropertiesSet() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    public String createToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
-
+    // 토큰 생성
+    public String createToken(String account, List<Authority> roles) {
+        Claims claims = Jwts.claims().setSubject(account);
+        claims.put("roles", roles);
+        Date now = new Date();
         return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
-                .signWith(key, SignatureAlgorithm.HS512)
-                .setExpiration(validity)
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + exp))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
+    // 권한정보 획득
+    // Spring Security 인증과정에서 권한확인을 위한 기능
     public Authentication getAuthentication(String token) {
-        Claims claims = Jwts
-                .parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-        User principal = new User(claims.getSubject(), "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getAccount(token));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
+    // 토큰에 담겨있는 유저 account 획득
+    public String getAccount(String token) {
+        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+    // Authorization Header를 통해 인증을 한다.
+    public String resolveToken(HttpServletRequest request) {
+        return request.getHeader("Authorization");
+    }
+
+    // 토큰 검증
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            logger.info("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            logger.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            logger.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            logger.info("JWT 토큰이 잘못되었습니다.");
+            // Bearer 검증
+            if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
+                return false;
+            } else {
+                token = token.split(" ")[1].trim();
+            }
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            // 만료되었을 시 false
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
         }
-        return false;
     }
 }
