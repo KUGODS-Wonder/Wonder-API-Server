@@ -18,10 +18,6 @@ public class SigninResponse {
 
     private Long memberId;
 
-    private String email;
-
-    private String name;
-
     private String token;
 
 }

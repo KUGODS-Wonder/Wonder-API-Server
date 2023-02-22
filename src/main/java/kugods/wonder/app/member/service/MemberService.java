@@ -33,8 +33,6 @@ public class MemberService {
 
         return SigninResponse.builder()
                 .memberId(member.getMemberId())
-                .email(member.getEmail())
-                .name(member.getName())
                 .token(tokenProvider.createToken(member.getEmail(), member.getRoles()))
                 .build();
     }
@@ -58,7 +56,6 @@ public class MemberService {
                 .email(member.getEmail())
                 .name(member.getName())
                 .address(member.getAddress())
-                .roles(member.getRoles())
                 .token(tokenProvider.createToken(member.getEmail(), member.getRoles()))
                 .build();
     }

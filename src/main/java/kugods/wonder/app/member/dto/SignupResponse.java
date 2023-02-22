@@ -24,8 +24,6 @@ public class SignupResponse {
 
     private String address;
 
-    private List<Authority> roles = new ArrayList<>();
-
     private String token;
 
 }
