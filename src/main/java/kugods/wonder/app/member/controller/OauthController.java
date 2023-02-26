@@ -47,11 +47,6 @@ public class OauthController {
 
         String reqUrl = googleLoginUrl + "/o/oauth2/v2/auth?client_id=" + googleClientId + "&redirect_uri=" + googleRedirectUrl
                 + "&response_type=code&scope=email%20profile%20openid&access_type=offline";
-        log.debug(reqUrl);
-        log.debug("myLog-LoginUrl : {}",googleLoginUrl);
-        log.debug("myLog-ClientId : {}",googleClientId);
-        log.debug("myLog-RedirectUrl : {}",googleRedirectUrl);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(reqUrl));
 
@@ -81,9 +76,6 @@ public class OauthController {
         ResponseEntity<GoogleLoginResponse> apiResponse = restTemplate.postForEntity(googleAuthUrl + "/token", googleOAuthRequest, GoogleLoginResponse.class);
         //4.받은 토큰을 토큰객체에 저장
         GoogleLoginResponse googleLoginResponse = apiResponse.getBody();
-
-        log.info("responseBody {}",googleLoginResponse.toString());
-
 
         String googleToken = googleLoginResponse.getId_token();
 
