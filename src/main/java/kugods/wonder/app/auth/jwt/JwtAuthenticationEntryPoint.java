@@ -1,4 +1,4 @@
-package kugods.wonder.app.auth;
+package kugods.wonder.app.auth.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

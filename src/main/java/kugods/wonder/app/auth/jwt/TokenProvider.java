@@ -1,4 +1,4 @@
-package kugods.wonder.app.auth;
+package kugods.wonder.app.auth.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

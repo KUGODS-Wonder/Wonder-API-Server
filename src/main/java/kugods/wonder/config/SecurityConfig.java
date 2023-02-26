@@ -1,20 +1,15 @@
 package kugods.wonder.config;
 
-import kugods.wonder.app.auth.JwtAccessDeniedHandler;
-import kugods.wonder.app.auth.JwtAuthenticationEntryPoint;
-import kugods.wonder.app.auth.JwtFilter;
-import kugods.wonder.app.auth.TokenProvider;
+import kugods.wonder.app.auth.jwt.JwtFilter;
+import kugods.wonder.app.auth.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
