@@ -62,6 +62,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 // 회원가입과 로그인은 모두 승인
                 .antMatchers("/api/v1/signin", "/api/v1/signup", "/api/v1/hello").permitAll()
+                .antMatchers("/login/getGoogleAuthUrl", "/login/oauth2/code/google").permitAll()
                 // /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 // /user 로 시작하는 요청은 USER 권한이 있는 유저에게만 허용
