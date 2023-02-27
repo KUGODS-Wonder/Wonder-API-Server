@@ -21,8 +21,6 @@ import static kugods.wonder.app.auth.oauth2.GoogleUserInfoProvider.getGoogleLogi
 @RequestMapping("/api/v1/members")
 public class MemberController {
 
-    @Value("${google.auth.url}")
-    private String googleAuthUrl;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
 
@@ -45,15 +43,6 @@ public class MemberController {
             @Validated @RequestBody OauthLoginReqeust request,
             @RequestHeader("GOOGLE-TOKEN") String googleToken
     ) {
-        validateGoogleToken(googleToken); // jwt Filter가 아닌, google 발급 유효성 검증만 진행
-        return ApiDataResponse.of(memberService.googleLogin(request));
-    }
-
-    private void validateGoogleToken(String googleToken) {
-        try {
-            getGoogleLoginClientResponse(googleAuthUrl, googleToken);
-        } catch (Exception e) {
-            throw new InvalidGoogleToken();
-        }
+        return ApiDataResponse.of(memberService.googleLogin(request, googleToken));
     }
 }

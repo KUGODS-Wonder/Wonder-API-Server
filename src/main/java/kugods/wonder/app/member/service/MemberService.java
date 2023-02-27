@@ -6,14 +6,18 @@ import kugods.wonder.app.member.dto.*;
 import kugods.wonder.app.member.entity.Authority;
 import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.member.exception.DuplicatedEmailException;
+import kugods.wonder.app.member.exception.InvalidGoogleToken;
 import kugods.wonder.app.member.exception.InvalidPasswordException;
 import kugods.wonder.app.member.exception.MemberDoesNotExistException;
 import kugods.wonder.app.member.repository.MemberRepository;
 import kugods.wonder.app.record.repository.TierRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+
+import static kugods.wonder.app.auth.oauth2.GoogleUserInfoProvider.getGoogleLoginClientResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +27,8 @@ public class MemberService {
     private final TierRepository tierRepository;
     private final TokenProvider tokenProvider;
 
+    @Value("${google.auth.url}")
+    private String googleAuthUrl;
     private final String DEFAULT_OAUTH_GOOGLE_PASSWORD = "GOOGLE";
 
     public SigninResponse signin(SigninRequest request) {
@@ -59,31 +65,51 @@ public class MemberService {
                 .build();
     }
     
-    public SigninResponse googleLogin(OauthLoginReqeust request) {
-        boolean whetherSignUp = memberRepository.findOneByEmail(request.getEmail()).isPresent();
+    public SigninResponse googleLogin(OauthLoginReqeust request, String googleToken) {
+        validateGoogleToken(googleToken); // jwt Filter가 아닌, google 발급 유효성 검증만 진행
+        return googleLoginResponse(request, memberRepository.findOneByEmail(request.getEmail()).isPresent());
+    }
+
+    private SigninResponse googleLoginResponse(OauthLoginReqeust request, boolean whetherSignUp) {
         if (whetherSignUp) {
-            Member member = memberRepository.findOneByEmail(request.getEmail())
-                    .orElseThrow(MemberDoesNotExistException::new);
-
-            return SigninResponse.builder()
-                    .memberId(member.getMemberId())
-                    .token(tokenProvider.createToken(member.getEmail(), member.getRoles()))
-                    .build();
+            return googleLoginWithoutSignUp(request);
         } else {
-            Member member = Member.builder()
-                    .email(request.getEmail())
-                    .password(DEFAULT_OAUTH_GOOGLE_PASSWORD) // 소셜 로그인
-                    .name(request.getName())
-                    .address(request.getAddress())
-                    .tier(tierRepository.findById(1L).orElseThrow()) // 브론즈5에서 시작.
-                    .build();
-            member.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
-            memberRepository.save(member);
+            return googleLoginWithSignUp(request);
+        }
+    }
 
-            return SigninResponse.builder()
-                    .memberId(member.getMemberId())
-                    .token(tokenProvider.createToken(member.getEmail(), member.getRoles()))
-                    .build();
+    private SigninResponse googleLoginWithSignUp(OauthLoginReqeust request) {
+        Member member = Member.builder()
+                .email(request.getEmail())
+                .password(DEFAULT_OAUTH_GOOGLE_PASSWORD) // 소셜 로그인
+                .name(request.getName())
+                .address(request.getAddress())
+                .tier(tierRepository.findById(1L).orElseThrow()) // 브론즈5에서 시작.
+                .build();
+        member.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
+        memberRepository.save(member);
+
+        return SigninResponse.builder()
+                .memberId(member.getMemberId())
+                .token(tokenProvider.createToken(member.getEmail(), member.getRoles()))
+                .build();
+    }
+
+    private SigninResponse googleLoginWithoutSignUp(OauthLoginReqeust request) {
+        Member member = memberRepository.findOneByEmail(request.getEmail())
+                .orElseThrow(MemberDoesNotExistException::new);
+
+        return SigninResponse.builder()
+                .memberId(member.getMemberId())
+                .token(tokenProvider.createToken(member.getEmail(), member.getRoles()))
+                .build();
+    }
+
+    private void validateGoogleToken(String googleToken) {
+        try {
+            getGoogleLoginClientResponse(googleAuthUrl, googleToken);
+        } catch (Exception e) {
+            throw new InvalidGoogleToken();
         }
     }
 
@@ -103,6 +129,5 @@ public class MemberService {
         if (isDuplicated) {
             throw new DuplicatedEmailException();
         }
-
     }
 }
