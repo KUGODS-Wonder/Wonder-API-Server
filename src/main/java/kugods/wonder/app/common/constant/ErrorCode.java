@@ -27,7 +27,9 @@ public enum ErrorCode {
     NOT_VALID_TOKEN(1001, HttpStatus.BAD_REQUEST, "Invalid token"),
     NOT_VALID_PASSWORD(1002, HttpStatus.BAD_REQUEST, "Password does not match"),
     MEMBER_DOES_NOT_EXIST(1003, HttpStatus.BAD_REQUEST , "Member does not exist"),
-    DUPLICATED_EMAIL(1004, HttpStatus.BAD_REQUEST, "Duplicated email");
+    DUPLICATED_EMAIL(1004, HttpStatus.BAD_REQUEST, "Duplicated email"),
+
+    INVALID_GOOGLE_TOKEN(1100,HttpStatus.BAD_REQUEST, "Invalid Google Token");
 
     private final Integer code;
     private final HttpStatus httpStatus;
