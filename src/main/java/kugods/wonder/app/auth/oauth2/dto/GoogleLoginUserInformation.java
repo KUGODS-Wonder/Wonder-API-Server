@@ -1,4 +1,4 @@
-package kugods.wonder.app.auth.oauth2;
+package kugods.wonder.app.auth.oauth2.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

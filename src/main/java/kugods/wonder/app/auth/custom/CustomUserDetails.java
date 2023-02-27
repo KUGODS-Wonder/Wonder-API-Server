@@ -1,4 +1,4 @@
-package kugods.wonder.app.auth.domain;
+package kugods.wonder.app.auth.custom;
 
 import kugods.wonder.app.member.entity.Member;
 import org.springframework.security.core.GrantedAuthority;

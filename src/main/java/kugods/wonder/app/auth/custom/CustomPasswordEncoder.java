@@ -1,4 +1,4 @@
-package kugods.wonder.app.auth.domain;
+package kugods.wonder.app.auth.custom;
 
 import lombok.extern.slf4j.Slf4j;
 
