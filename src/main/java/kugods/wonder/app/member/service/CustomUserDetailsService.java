@@ -1,6 +1,6 @@
 package kugods.wonder.app.member.service;
 
-import kugods.wonder.app.auth.domain.CustomUserDetails;
+import kugods.wonder.app.auth.custom.CustomUserDetails;
 import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

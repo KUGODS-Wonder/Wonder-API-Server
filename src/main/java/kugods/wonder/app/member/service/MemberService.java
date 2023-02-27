@@ -1,7 +1,7 @@
 package kugods.wonder.app.member.service;
 
 import kugods.wonder.app.auth.jwt.TokenProvider;
-import kugods.wonder.app.auth.domain.CustomPasswordEncoder;
+import kugods.wonder.app.auth.custom.CustomPasswordEncoder;
 import kugods.wonder.app.member.dto.SigninRequest;
 import kugods.wonder.app.member.dto.SigninResponse;
 import kugods.wonder.app.member.dto.SignupRequest;
