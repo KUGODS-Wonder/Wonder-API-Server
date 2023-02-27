@@ -41,15 +41,12 @@ public class MemberController {
     }
 
     @PostMapping("/google/login")
-    public ApiDataResponse<String> googleLogin(
-            @Validated @RequestBody OauthLoginReqeust reqeust,
+    public ApiDataResponse<SigninResponse> googleLogin(
+            @Validated @RequestBody OauthLoginReqeust request,
             @RequestHeader("GOOGLE-TOKEN") String googleToken
     ) {
-        // validate google Token - jwt Filter가 아닌, google 발급 유효성 검증만 진행
-        validateGoogleToken(googleToken);
-
-        //todo - service (1) 회원가입 여부 확인 후 처리 (2) 로그인 성공 응답으로 jwt 전달
-        return ApiDataResponse.of("success");
+        validateGoogleToken(googleToken); // jwt Filter가 아닌, google 발급 유효성 검증만 진행
+        return ApiDataResponse.of(memberService.googleLogin(request));
     }
 
     private void validateGoogleToken(String googleToken) {

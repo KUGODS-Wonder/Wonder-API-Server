@@ -2,10 +2,7 @@ package kugods.wonder.app.member.service;
 
 import kugods.wonder.app.auth.jwt.TokenProvider;
 import kugods.wonder.app.auth.custom.CustomPasswordEncoder;
-import kugods.wonder.app.member.dto.SigninRequest;
-import kugods.wonder.app.member.dto.SigninResponse;
-import kugods.wonder.app.member.dto.SignupRequest;
-import kugods.wonder.app.member.dto.SignupResponse;
+import kugods.wonder.app.member.dto.*;
 import kugods.wonder.app.member.entity.Authority;
 import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.member.exception.DuplicatedEmailException;
@@ -25,6 +22,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final TierRepository tierRepository;
     private final TokenProvider tokenProvider;
+
+    private final String DEFAULT_OAUTH_GOOGLE_PASSWORD = "GOOGLE";
 
     public SigninResponse signin(SigninRequest request) {
         Member member = memberRepository.findOneByEmail(request.getEmail())
@@ -58,6 +57,34 @@ public class MemberService {
                 .address(member.getAddress())
                 .token(tokenProvider.createToken(member.getEmail(), member.getRoles()))
                 .build();
+    }
+    
+    public SigninResponse googleLogin(OauthLoginReqeust request) {
+        boolean whetherSignUp = memberRepository.findOneByEmail(request.getEmail()).isPresent();
+        if (whetherSignUp) {
+            Member member = memberRepository.findOneByEmail(request.getEmail())
+                    .orElseThrow(MemberDoesNotExistException::new);
+
+            return SigninResponse.builder()
+                    .memberId(member.getMemberId())
+                    .token(tokenProvider.createToken(member.getEmail(), member.getRoles()))
+                    .build();
+        } else {
+            Member member = Member.builder()
+                    .email(request.getEmail())
+                    .password(DEFAULT_OAUTH_GOOGLE_PASSWORD) // 소셜 로그인
+                    .name(request.getName())
+                    .address(request.getAddress())
+                    .tier(tierRepository.findById(1L).orElseThrow()) // 브론즈5에서 시작.
+                    .build();
+            member.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
+            memberRepository.save(member);
+
+            return SigninResponse.builder()
+                    .memberId(member.getMemberId())
+                    .token(tokenProvider.createToken(member.getEmail(), member.getRoles()))
+                    .build();
+        }
     }
 
     private void validatePassword(Member member, String password) {
