@@ -1,4 +1,4 @@
-package kugods.wonder.app.auth;
+package kugods.wonder.app.auth.jwt;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
