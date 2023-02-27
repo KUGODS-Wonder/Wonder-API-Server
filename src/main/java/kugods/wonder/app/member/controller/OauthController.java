@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
+import java.util.Objects;
 
 import static kugods.wonder.app.auth.oauth2.GoogleUserInfoProvider.getGoogleLoginClientResponse;
 
@@ -56,7 +57,7 @@ public class OauthController {
             HttpServletRequest request,
             @RequestParam(value = "code") String authCode,
             HttpServletResponse response
-    ) throws Exception {
+    ) {
         //2.구글에 등록된 wonder server의 설정정보를 보내어 약속된 토큰을 받위한 객체 생성
         GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest
                 .builder()
@@ -70,17 +71,12 @@ public class OauthController {
         RestTemplate restTemplate = new RestTemplate();
 
         //3.토큰요청을 한다.
-        ResponseEntity<GoogleLoginResponse> apiResponse = restTemplate.postForEntity(googleAuthUrl + "/token", googleOAuthRequest, GoogleLoginResponse.class);
+        GoogleLoginResponse googleLoginResponse = restTemplate.postForEntity(
+                googleAuthUrl + "/token",
+                googleOAuthRequest, GoogleLoginResponse.class).getBody();
 
-        //4.받은 토큰을 토큰객체에 저장
-        GoogleLoginResponse googleLoginResponse = apiResponse.getBody();
-
-        String googleToken = googleLoginResponse.getId_token();
-
-        //5.받은 토큰을 구글에 보내 유저정보를 얻는다.
-        GoogleLoginClientResponse clientResponse = getGoogleLoginClientResponse(googleAuthUrl, googleToken);
-
-        return clientResponse;
+        //4.받은 토큰을 구글에 보내 유저정보를 얻는다.
+        return getGoogleLoginClientResponse(googleAuthUrl, Objects.requireNonNull(googleLoginResponse).getId_token());
     }
 
     private HttpHeaders setGoogleAuthRequestHeader() {
