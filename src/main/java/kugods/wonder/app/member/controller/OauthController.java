@@ -45,22 +45,18 @@ public class OauthController {
     // 구글 로그인창 호출
     @GetMapping(value = "/login/getGoogleAuthUrl")
     public ResponseEntity<?> getGoogleAuthUrl(HttpServletRequest request) throws Exception {
-
-        String reqUrl = googleLoginUrl + "/o/oauth2/v2/auth?client_id=" + googleClientId + "&redirect_uri=" + googleRedirectUrl
-                + "&response_type=code&scope=email%20profile%20openid&access_type=offline";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(reqUrl));
-
+        HttpHeaders headers = setGoogleAuthRequestHeader();
         //1.reqUrl 구글로그인 창을 띄우고, 로그인 후 /login/oauth_google_check 으로 리다이렉션하게 한다.
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
     // 구글에서 리다이렉션
     @GetMapping(value = "/login/oauth2/code/google")
-    public GoogleLoginClientResponse oauth_google_check(HttpServletRequest request,
-                                                        @RequestParam(value = "code") String authCode,
-                                                        HttpServletResponse response) throws Exception {
-
+    public GoogleLoginClientResponse oauth_google_check(
+            HttpServletRequest request,
+            @RequestParam(value = "code") String authCode,
+            HttpServletResponse response
+    ) throws Exception {
         //2.구글에 등록된 wonder server의 설정정보를 보내어 약속된 토큰을 받위한 객체 생성
         GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest
                 .builder()
@@ -75,6 +71,7 @@ public class OauthController {
 
         //3.토큰요청을 한다.
         ResponseEntity<GoogleLoginResponse> apiResponse = restTemplate.postForEntity(googleAuthUrl + "/token", googleOAuthRequest, GoogleLoginResponse.class);
+
         //4.받은 토큰을 토큰객체에 저장
         GoogleLoginResponse googleLoginResponse = apiResponse.getBody();
 
@@ -84,5 +81,17 @@ public class OauthController {
         GoogleLoginClientResponse clientResponse = getGoogleLoginClientResponse(googleAuthUrl, googleToken);
 
         return clientResponse;
+    }
+
+    private HttpHeaders setGoogleAuthRequestHeader() {
+        String reqUrl = setRequestUrl();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(reqUrl));
+        return headers;
+    }
+
+    private String setRequestUrl() {
+        return googleLoginUrl + "/o/oauth2/v2/auth?client_id=" + googleClientId + "&redirect_uri=" + googleRedirectUrl
+                + "&response_type=code&scope=email%20profile%20openid&access_type=offline";
     }
 }
