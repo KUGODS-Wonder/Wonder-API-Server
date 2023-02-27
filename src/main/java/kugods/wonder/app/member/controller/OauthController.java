@@ -1,6 +1,8 @@
 package kugods.wonder.app.member.controller;
 
+import kugods.wonder.app.auth.oauth2.GoogleLoginClientResponse;
 import kugods.wonder.app.auth.oauth2.GoogleLoginResponse;
+import kugods.wonder.app.auth.oauth2.GoogleLoginUserInformation;
 import kugods.wonder.app.auth.oauth2.GoogleOAuthRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -56,11 +57,11 @@ public class OauthController {
 
     // 구글에서 리다이렉션
     @GetMapping(value = "/login/oauth2/code/google")
-    public String oauth_google_check(HttpServletRequest request,
-                                     @RequestParam(value = "code") String authCode,
-                                     HttpServletResponse response) throws Exception{
+    public GoogleLoginClientResponse oauth_google_check(HttpServletRequest request,
+                                                  @RequestParam(value = "code") String authCode,
+                                                  HttpServletResponse response) throws Exception {
 
-        //2.구글에 등록된 레드망고 설정정보를 보내어 약속된 토큰을 받위한 객체 생성
+        //2.구글에 등록된 wonder server의 설정정보를 보내어 약속된 토큰을 받위한 객체 생성
         GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest
                 .builder()
                 .clientId(googleClientId)
@@ -80,11 +81,17 @@ public class OauthController {
         String googleToken = googleLoginResponse.getId_token();
 
         //5.받은 토큰을 구글에 보내 유저정보를 얻는다.
-        String requestUrl = UriComponentsBuilder.fromHttpUrl(googleAuthUrl + "/tokeninfo").queryParam("id_token",googleToken).toUriString();
+        String requestUrl = UriComponentsBuilder.fromHttpUrl(googleAuthUrl + "/tokeninfo").queryParam("id_token", googleToken).toUriString();
 
         //6.허가된 토큰의 유저정보를 결과로 받는다.
-        String resultJson = restTemplate.getForObject(requestUrl, String.class);
+        GoogleLoginUserInformation userInfo = restTemplate.getForObject(requestUrl, GoogleLoginUserInformation.class);
 
-        return resultJson;
+        GoogleLoginClientResponse clientResponse = GoogleLoginClientResponse.builder()
+                .googleToken(googleToken)
+                .email(userInfo.getEmail())
+                .name(userInfo.getName())
+                .build();
+
+        return clientResponse;
     }
 }
