@@ -47,7 +47,7 @@ public class OauthController {
     @GetMapping(value = "/login/getGoogleAuthUrl")
     public ResponseEntity<?> getGoogleAuthUrl(HttpServletRequest request) throws Exception {
         HttpHeaders headers = setGoogleAuthRequestHeader();
-        //1.reqUrl 구글로그인 창을 띄우고, 로그인 후 /login/oauth_google_check 으로 리다이렉션하게 한다.
+        //1.구글로그인 창을 띄우고, 로그인 후 /login/oauth2/code/google 으로 redirect.
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
@@ -58,7 +58,7 @@ public class OauthController {
             @RequestParam(value = "code") String authCode,
             HttpServletResponse response
     ) {
-        //2.구글에 등록된 wonder server의 설정정보를 보내어 약속된 토큰을 받위한 객체 생성
+        //2.구글에 등록된 wonder server의 설정 정보를 보내고, 약속된 토큰을 받음
         GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest
                 .builder()
                 .clientId(googleClientId)

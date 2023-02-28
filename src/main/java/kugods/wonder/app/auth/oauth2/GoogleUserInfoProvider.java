@@ -13,11 +13,10 @@ public class GoogleUserInfoProvider {
 
         GoogleLoginUserInformation userInfo = restTemplate.getForObject(requestUrl, GoogleLoginUserInformation.class);
 
-        GoogleLoginClientResponse clientResponse = GoogleLoginClientResponse.builder()
+        return GoogleLoginClientResponse.builder()
                 .googleToken(googleToken)
                 .email(userInfo.getEmail())
                 .name(userInfo.getName())
                 .build();
-        return clientResponse;
     }
 }
