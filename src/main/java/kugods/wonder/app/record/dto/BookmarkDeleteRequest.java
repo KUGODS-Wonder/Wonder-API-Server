@@ -12,8 +12,5 @@ import javax.validation.constraints.NotNull;
 public class BookmarkDeleteRequest {
 
     @NotNull
-    private Long memberId;
-
-    @NotNull
-    private Long walkId;
+    private Long bookmarkId;
 }

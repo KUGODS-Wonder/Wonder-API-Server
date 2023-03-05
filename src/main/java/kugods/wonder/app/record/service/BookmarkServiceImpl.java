@@ -11,6 +11,7 @@ import kugods.wonder.app.record.entity.Bookmark;
 import kugods.wonder.app.record.exception.DuplicatedBookmarkException;
 import kugods.wonder.app.record.repository.BookmarkRepository;
 import kugods.wonder.app.walk.entity.Walk;
+import kugods.wonder.app.walk.exception.BookmarkDoesNotExistException;
 import kugods.wonder.app.walk.exception.WalkDoesNotExistException;
 import kugods.wonder.app.walk.repository.WalkRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,15 @@ public class BookmarkServiceImpl implements BookmarkService{
     @Override
     @Transactional
     public BookmarkResponse deleteBookmark(BookmarkDeleteRequest request) {
-        return null;
+        Bookmark bookmark = bookmarkRepository.findById(request.getBookmarkId())
+                .orElseThrow(BookmarkDoesNotExistException::new);
+        bookmarkRepository.delete(bookmark);
+
+        return BookmarkResponse.builder()
+                .bookmarkId(bookmark.getBookmarkId())
+                .title(bookmark.getTitle())
+                .contents(bookmark.getContent())
+                .build();
     }
 
     private void validateBookmarkDuplication(Long memberId, Long walkId) {
