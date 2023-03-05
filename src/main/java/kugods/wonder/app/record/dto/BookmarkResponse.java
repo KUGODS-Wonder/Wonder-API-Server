@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 public class BookmarkResponse {
 
     @NotNull
-    private Long walkId;
+    private Long bookmarkId;
 
     @NotNull
     @Size(min = 1, max = 100)

@@ -3,9 +3,15 @@ package kugods.wonder.app.record.entity;
 import kugods.wonder.app.common.entity.BaseEntity;
 import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.walk.entity.Walk;
+import lombok.*;
 
 import javax.persistence.*;
 
+@Getter
+@ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "Bookmark")
 @Entity
 public class Bookmark extends BaseEntity {
