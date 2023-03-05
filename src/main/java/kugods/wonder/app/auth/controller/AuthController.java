@@ -3,7 +3,7 @@ package kugods.wonder.app.auth.controller;
 import kugods.wonder.app.common.dto.ApiDataResponse;
 import kugods.wonder.app.auth.dto.*;
 import kugods.wonder.app.member.repository.MemberRepository;
-import kugods.wonder.app.auth.service.AuthService;
+import kugods.wonder.app.auth.service.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -16,20 +16,20 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final MemberRepository memberRepository;
-    private final AuthService authService;
+    private final AuthServiceImpl authServiceImpl;
 
     @PostMapping("/signin")
     public ApiDataResponse<SigninResponse> signin(
             @Validated @RequestBody SigninRequest request
     ) {
-        return ApiDataResponse.of(authService.signin(request));
+        return ApiDataResponse.of(authServiceImpl.signin(request));
     }
 
     @PostMapping("/signup")
     public ApiDataResponse<SignupResponse> signup(
             @Validated @RequestBody SignupRequest request
     ) {
-        return ApiDataResponse.of(authService.signup(request));
+        return ApiDataResponse.of(authServiceImpl.signup(request));
     }
 
     @PostMapping("/google/login")
@@ -37,6 +37,6 @@ public class AuthController {
             @Validated @RequestBody OauthLoginReqeust request,
             @RequestHeader("GOOGLE-TOKEN") String googleToken
     ) {
-        return ApiDataResponse.of(authService.googleLogin(request, googleToken));
+        return ApiDataResponse.of(authServiceImpl.googleLogin(request, googleToken));
     }
 }
