@@ -1,10 +1,8 @@
 package kugods.wonder.app.record.service;
 
-import kugods.wonder.app.auth.exception.DuplicatedEmailException;
 import kugods.wonder.app.auth.exception.MemberDoesNotExistException;
 import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.member.repository.MemberRepository;
-import kugods.wonder.app.record.dto.BookmarkDeleteRequest;
 import kugods.wonder.app.record.dto.BookmarkRequest;
 import kugods.wonder.app.record.dto.BookmarkResponse;
 import kugods.wonder.app.record.entity.Bookmark;
@@ -63,8 +61,8 @@ public class BookmarkServiceImpl implements BookmarkService{
 
     @Override
     @Transactional
-    public BookmarkResponse deleteBookmark(BookmarkDeleteRequest request) {
-        Bookmark bookmark = bookmarkRepository.findById(request.getBookmarkId())
+    public BookmarkResponse deleteBookmark(Long bookmarkId) {
+        Bookmark bookmark = bookmarkRepository.findById(bookmarkId)
                 .orElseThrow(BookmarkDoesNotExistException::new);
         bookmarkRepository.delete(bookmark);
 
