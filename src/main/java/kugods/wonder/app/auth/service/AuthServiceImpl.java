@@ -48,8 +48,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public SignupResponse signup(SignupRequest request) {
-        //중복확인
-        validateEmailDuplication(request.getEmail());
+        validateEmailandNameDuplication(request.getEmail(), request.getName());
         
         Member member = Member.builder()
                 .email(request.getEmail())
@@ -130,9 +129,21 @@ public class AuthServiceImpl implements AuthService{
         }
     }
 
+    private void validateEmailandNameDuplication(String email, String name) {
+        validateEmailDuplication(email);
+        validateNameDuplication(name);
+    }
+
     private void validateEmailDuplication(String email) {
         // 이메일 검증
         boolean isDuplicated = memberRepository.findOneByEmail(email).isPresent();
+        if (isDuplicated) {
+            throw new DuplicatedEmailException();
+        }
+    }
+
+    private void validateNameDuplication(String name) {
+        boolean isDuplicated = memberRepository.findOneByName(name).isPresent();
         if (isDuplicated) {
             throw new DuplicatedEmailException();
         }
