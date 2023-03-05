@@ -30,7 +30,7 @@ public class BookmarkServiceImpl implements BookmarkService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<Bookmark> getBookmarks(Long memberId) {
+    public List<BookmarkResponse> getBookmarks(Long memberId) {
         return null;
     }
 

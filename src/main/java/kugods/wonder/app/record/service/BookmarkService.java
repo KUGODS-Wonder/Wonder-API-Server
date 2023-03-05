@@ -8,7 +8,7 @@ import kugods.wonder.app.record.entity.Bookmark;
 import java.util.List;
 
 public interface BookmarkService {
-    List<Bookmark> getBookmarks(Long memberId);
+    List<BookmarkResponse> getBookmarks(Long memberId);
 
     BookmarkResponse addBookmark(BookmarkRequest request);
 
