@@ -1,7 +1,7 @@
 package kugods.wonder.config;
 
-import kugods.wonder.app.auth.jwt.JwtFilter;
-import kugods.wonder.app.auth.jwt.TokenProvider;
+import kugods.wonder.app.auth.domain.jwt.JwtFilter;
+import kugods.wonder.app.auth.domain.jwt.TokenProvider;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
