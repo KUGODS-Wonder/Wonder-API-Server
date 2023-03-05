@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,10 @@ public class BookmarkServiceImpl implements BookmarkService{
     @Override
     @Transactional(readOnly = true)
     public List<BookmarkResponse> getBookmarks(Long memberId) {
-        return null;
+        return bookmarkRepository.findAllByMemberId(memberId)
+                .stream()
+                .map(Bookmark::toReponse)
+                .collect(Collectors.toList());
     }
 
     @Override
