@@ -1,12 +1,18 @@
 package kugods.wonder.app.walk.entity;
 
 import kugods.wonder.app.common.entity.BaseEntity;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "Walk")
 @Entity
 public class Walk extends BaseEntity {

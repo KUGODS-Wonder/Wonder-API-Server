@@ -24,15 +24,15 @@ public class BookmarkController {
     public ApiDataResponse<List<BookmarkResponse>> getBookmarkList(
             Authentication auth
     ) {
-        String memberEmail = auth.getName();
-        return ApiDataResponse.of(bookmarkService.getBookmarks(memberEmail));
+        return ApiDataResponse.of(bookmarkService.getBookmarks(auth.getName()));
     }
 
     @PostMapping
     public ApiDataResponse<BookmarkResponse> addBookmark(
+            Authentication auth,
             @Validated @RequestBody BookmarkRequest request
     ) {
-        return ApiDataResponse.of(bookmarkService.addBookmark(request));
+        return ApiDataResponse.of(bookmarkService.addBookmark(auth.getName(), request));
     }
 
     @DeleteMapping("/delete/{bookmarkId}")

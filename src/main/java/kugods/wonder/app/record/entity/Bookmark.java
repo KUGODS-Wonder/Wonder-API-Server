@@ -39,6 +39,7 @@ public class Bookmark extends BaseEntity {
     public BookmarkResponse toReponse(){
         return BookmarkResponse.builder()
                 .bookmarkId(getBookmarkId())
+                .walkId(getWalk().getWalkId())
                 .title(title)
                 .contents(content)
                 .build();

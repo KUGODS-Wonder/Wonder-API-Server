@@ -16,6 +16,9 @@ public class BookmarkResponse {
     private Long bookmarkId;
 
     @NotNull
+    private Long walkId;
+
+    @NotNull
     @Size(min = 1, max = 100)
     private String title;
 

@@ -13,9 +13,6 @@ import javax.validation.constraints.Size;
 public class BookmarkRequest {
 
     @NotNull
-    private Long memberId;
-
-    @NotNull
     private Long walkId;
 
     @NotNull

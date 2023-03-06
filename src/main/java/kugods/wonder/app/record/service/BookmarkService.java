@@ -8,7 +8,7 @@ import java.util.List;
 public interface BookmarkService {
     List<BookmarkResponse> getBookmarks(String email);
 
-    BookmarkResponse addBookmark(BookmarkRequest request);
+    BookmarkResponse addBookmark(String email, BookmarkRequest request);
 
     BookmarkResponse deleteBookmark(Long bookmarkId);
 }
