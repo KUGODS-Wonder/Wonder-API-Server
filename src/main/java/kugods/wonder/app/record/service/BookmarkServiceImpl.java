@@ -29,8 +29,8 @@ public class BookmarkServiceImpl implements BookmarkService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookmarkResponse> getBookmarks(Long memberId) {
-        return bookmarkRepository.findAllByMember_MemberId(memberId)
+    public List<BookmarkResponse> getBookmarks(String email) {
+        return bookmarkRepository.findAllByMember_Email(email)
                 .stream()
                 .map(Bookmark::toReponse)
                 .collect(Collectors.toList());

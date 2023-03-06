@@ -6,6 +6,7 @@ import kugods.wonder.app.record.dto.BookmarkResponse;
 import kugods.wonder.app.record.service.BookmarkServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +20,12 @@ public class BookmarkController {
 
     private final BookmarkServiceImpl bookmarkService;
 
-    @GetMapping("/{memberId}")
+    @GetMapping
     public ApiDataResponse<List<BookmarkResponse>> getBookmarkList(
-            @PathVariable("memberId") Long memberId
+            Authentication auth
     ) {
-        return ApiDataResponse.of(bookmarkService.getBookmarks(memberId));
+        String memberEmail = auth.getName();
+        return ApiDataResponse.of(bookmarkService.getBookmarks(memberEmail));
     }
 
     @PostMapping
