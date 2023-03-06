@@ -29,7 +29,7 @@ public enum ErrorCode {
     DUPLICATED_EMAIL(1004, HttpStatus.BAD_REQUEST, "Duplicated email"),
     DUPLICATED_NAME(1005, HttpStatus.BAD_REQUEST, "Duplicated name"),
     WALK_DOES_NOT_EXIST(1006, HttpStatus.BAD_REQUEST, "Walk does not exist"),
-    DUPLICATED_BOOKMARK(1007, HttpStatus.BAD_REQUEST, "Duplicated name"),
+    DUPLICATED_BOOKMARK(1007, HttpStatus.BAD_REQUEST, "Duplicated bookmark"),
     BOOKMARK_DOES_NOT_EXIST(1008,HttpStatus.BAD_REQUEST, "Bookmark does not exist"),
 
     INVALID_GOOGLE_TOKEN(1100, HttpStatus.BAD_REQUEST, "Invalid Google Token");

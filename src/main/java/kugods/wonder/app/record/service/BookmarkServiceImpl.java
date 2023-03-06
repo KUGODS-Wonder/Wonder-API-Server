@@ -29,8 +29,8 @@ public class BookmarkServiceImpl implements BookmarkService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookmarkResponse> getBookmarks(Long memberId) {
-        return bookmarkRepository.findAllByMember_MemberId(memberId)
+    public List<BookmarkResponse> getBookmarks(String email) {
+        return bookmarkRepository.findAllByMember_Email(email)
                 .stream()
                 .map(Bookmark::toReponse)
                 .collect(Collectors.toList());
@@ -38,9 +38,9 @@ public class BookmarkServiceImpl implements BookmarkService{
 
     @Override
     @Transactional
-    public BookmarkResponse addBookmark(BookmarkRequest request) {
-        validateBookmarkDuplication(request.getMemberId(), request.getWalkId());
-        Member member = memberRepository.findById(request.getMemberId())
+    public BookmarkResponse addBookmark(String email, BookmarkRequest request) {
+        validateBookmarkDuplication(email, request.getWalkId());
+        Member member = memberRepository.findOneByEmail(email)
                 .orElseThrow(MemberDoesNotExistException::new);
         Walk walk = walkRepository.findById(request.getWalkId())
                 .orElseThrow(WalkDoesNotExistException::new);
@@ -52,11 +52,7 @@ public class BookmarkServiceImpl implements BookmarkService{
                 .build();
         bookmarkRepository.save(bookmark);
 
-        return BookmarkResponse.builder()
-                .bookmarkId(bookmark.getBookmarkId())
-                .title(bookmark.getTitle())
-                .contents(bookmark.getContent())
-                .build();
+        return bookmark.toReponse();
     }
 
     @Override
@@ -66,15 +62,11 @@ public class BookmarkServiceImpl implements BookmarkService{
                 .orElseThrow(BookmarkDoesNotExistException::new);
         bookmarkRepository.delete(bookmark);
 
-        return BookmarkResponse.builder()
-                .bookmarkId(bookmark.getBookmarkId())
-                .title(bookmark.getTitle())
-                .contents(bookmark.getContent())
-                .build();
+        return bookmark.toReponse();
     }
 
-    private void validateBookmarkDuplication(Long memberId, Long walkId) {
-        boolean isDuplicated = bookmarkRepository.findOneByWalk_WalkIdAndMember_MemberId(walkId, memberId).isPresent();
+    private void validateBookmarkDuplication(String email, Long walkId) {
+        boolean isDuplicated = bookmarkRepository.findOneByMember_EmailAndWalk_WalkId(email, walkId).isPresent();
         if (isDuplicated) {
             throw new DuplicatedBookmarkException();
         }
