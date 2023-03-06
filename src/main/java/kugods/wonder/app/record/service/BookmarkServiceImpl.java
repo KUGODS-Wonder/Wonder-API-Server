@@ -30,7 +30,7 @@ public class BookmarkServiceImpl implements BookmarkService{
     @Override
     @Transactional(readOnly = true)
     public List<BookmarkResponse> getBookmarks(Long memberId) {
-        return bookmarkRepository.findAllByMemberId(memberId)
+        return bookmarkRepository.findAllByMember_MemberId(memberId)
                 .stream()
                 .map(Bookmark::toReponse)
                 .collect(Collectors.toList());
@@ -74,7 +74,7 @@ public class BookmarkServiceImpl implements BookmarkService{
     }
 
     private void validateBookmarkDuplication(Long memberId, Long walkId) {
-        boolean isDuplicated = bookmarkRepository.findOneByWalkIdAndMemberId(walkId, memberId).isPresent();
+        boolean isDuplicated = bookmarkRepository.findOneByWalk_WalkIdAndMember_MemberId(walkId, memberId).isPresent();
         if (isDuplicated) {
             throw new DuplicatedBookmarkException();
         }
