@@ -76,6 +76,15 @@ public class AuthServiceImpl implements AuthService{
         return googleLoginResponse(request, memberRepository.findOneByEmail(request.getEmail()).isPresent());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public CheckNameResponse checkName(String name) {
+        return CheckNameResponse.builder()
+                .inputName(name)
+                .isDuplicated(memberRepository.findOneByName(name).isPresent())
+                .build();
+    }
+
     private SigninResponse googleLoginResponse(OauthLoginReqeust request, boolean whetherSignUp) {
         if (whetherSignUp) {
             return googleLoginWithoutSignUp(request);

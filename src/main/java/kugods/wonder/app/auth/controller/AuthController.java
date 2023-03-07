@@ -1,9 +1,9 @@
 package kugods.wonder.app.auth.controller;
 
-import kugods.wonder.app.common.dto.ApiDataResponse;
 import kugods.wonder.app.auth.dto.*;
-import kugods.wonder.app.member.repository.MemberRepository;
 import kugods.wonder.app.auth.service.AuthServiceImpl;
+import kugods.wonder.app.common.dto.ApiDataResponse;
+import kugods.wonder.app.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -38,5 +38,12 @@ public class AuthController {
             @RequestHeader("GOOGLE-TOKEN") String googleToken
     ) {
         return ApiDataResponse.of(authServiceImpl.googleLogin(request, googleToken));
+    }
+
+    @GetMapping("/check-name/{name}")
+    public ApiDataResponse<CheckNameResponse> checkName(
+            @PathVariable("name") String name
+    ) {
+        return ApiDataResponse.of(authServiceImpl.checkName(name));
     }
 }
