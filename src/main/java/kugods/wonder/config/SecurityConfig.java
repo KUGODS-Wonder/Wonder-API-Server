@@ -61,7 +61,7 @@ public class SecurityConfig {
                 // 조건별로 요청 허용/제한 설정
                 .authorizeRequests()
                 // 회원가입과 로그인은 모두 승인
-                .antMatchers("/api/v1/auth/signin", "/api/v1/auth/signup", "/api/v1/auth/google/login").permitAll()
+                .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/login/getGoogleAuthUrl", "/login/oauth2/code/google").permitAll()
                 .antMatchers("/api/**").hasRole("USER")
                 .anyRequest().denyAll()
