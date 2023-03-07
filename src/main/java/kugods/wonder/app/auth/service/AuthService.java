@@ -9,5 +9,5 @@ public interface AuthService {
 
     SigninResponse googleLogin(OauthLoginReqeust request, String googleToken);
 
-    CheckNameResponse checkName(String name);
+    CheckNameResponse checkNameDuplication(String name);
 }

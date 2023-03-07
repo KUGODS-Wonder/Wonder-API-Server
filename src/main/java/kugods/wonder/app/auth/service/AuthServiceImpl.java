@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     @Transactional(readOnly = true)
-    public CheckNameResponse checkName(String name) {
+    public CheckNameResponse checkNameDuplication(String name) {
         return CheckNameResponse.builder()
                 .inputName(name)
                 .isDuplicated(memberRepository.findOneByName(name).isPresent())

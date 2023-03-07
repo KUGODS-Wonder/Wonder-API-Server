@@ -41,9 +41,9 @@ public class AuthController {
     }
 
     @GetMapping("/check-name/{name}")
-    public ApiDataResponse<CheckNameResponse> checkName(
+    public ApiDataResponse<CheckNameResponse> checkNameDuplication(
             @PathVariable("name") String name
     ) {
-        return ApiDataResponse.of(authServiceImpl.checkName(name));
+        return ApiDataResponse.of(authServiceImpl.checkNameDuplication(name));
     }
 }
