@@ -1,14 +1,15 @@
 package kugods.wonder.app.auth.service;
 
-import kugods.wonder.app.auth.domain.jwt.TokenProvider;
 import kugods.wonder.app.auth.domain.custom.CustomPasswordEncoder;
+import kugods.wonder.app.auth.domain.jwt.TokenProvider;
+import kugods.wonder.app.auth.domain.oauth2.GoogleUserInfoProvider;
 import kugods.wonder.app.auth.dto.*;
-import kugods.wonder.app.member.entity.Authority;
-import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.auth.exception.DuplicatedEmailException;
 import kugods.wonder.app.auth.exception.InvalidGoogleToken;
 import kugods.wonder.app.auth.exception.InvalidPasswordException;
 import kugods.wonder.app.auth.exception.MemberDoesNotExistException;
+import kugods.wonder.app.member.entity.Authority;
+import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.member.repository.MemberRepository;
 import kugods.wonder.app.record.repository.TierRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 
-import static kugods.wonder.app.auth.domain.oauth2.GoogleUserInfoProvider.getGoogleLoginClientResponse;
-
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
 
     private final MemberRepository memberRepository;
     private final TierRepository tierRepository;
     private final TokenProvider tokenProvider;
+    private final GoogleUserInfoProvider googleUserInfoProvider;
 
     @Value("${google.auth.url}")
     private String googleAuthUrl;
@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService{
     @Transactional
     public SignupResponse signup(SignupRequest request) {
         validateEmailandNameDuplication(request.getEmail(), request.getName());
-        
+
         Member member = Member.builder()
                 .email(request.getEmail())
                 .password(CustomPasswordEncoder.hashPassword(request.getPassword()))
@@ -122,7 +122,7 @@ public class AuthServiceImpl implements AuthService{
 
     private void validateGoogleToken(String googleToken) {
         try {
-            getGoogleLoginClientResponse(googleAuthUrl, googleToken);
+            googleUserInfoProvider.getGoogleLoginClientResponse(googleAuthUrl, googleToken);
         } catch (Exception e) {
             throw new InvalidGoogleToken();
         }

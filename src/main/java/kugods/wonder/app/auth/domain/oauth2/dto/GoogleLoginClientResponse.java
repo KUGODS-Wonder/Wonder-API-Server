@@ -13,4 +13,6 @@ public class GoogleLoginClientResponse {
     private String googleToken;
     private String email;
     private String name;
+    private String address;
+    private boolean alreadyRegistered;
 }

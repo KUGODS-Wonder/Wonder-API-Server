@@ -1,5 +1,6 @@
 package kugods.wonder.app.auth.controller;
 
+import kugods.wonder.app.auth.domain.oauth2.GoogleUserInfoProvider;
 import kugods.wonder.app.auth.domain.oauth2.dto.GoogleLoginClientResponse;
 import kugods.wonder.app.auth.domain.oauth2.dto.GoogleLoginResponse;
 import kugods.wonder.app.auth.domain.oauth2.dto.GoogleOAuthRequest;
@@ -18,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.Objects;
-
-import static kugods.wonder.app.auth.domain.oauth2.GoogleUserInfoProvider.getGoogleLoginClientResponse;
 
 
 @Slf4j
@@ -41,6 +40,8 @@ public class OauthController {
 
     @Value("${google.secret}")
     private String googleClientSecret;
+
+    private final GoogleUserInfoProvider googleUserInfoProvider;
 
 
     // 구글 로그인창 호출
@@ -72,7 +73,9 @@ public class OauthController {
                 googleAuthUrl + "/token",
                 googleOAuthRequest, GoogleLoginResponse.class).getBody();
 
-        return getGoogleLoginClientResponse(googleAuthUrl, Objects.requireNonNull(googleLoginResponse).getId_token());
+        return googleUserInfoProvider.getGoogleLoginClientResponse(
+                googleAuthUrl,
+                Objects.requireNonNull(googleLoginResponse).getId_token());
     }
 
     private HttpHeaders setGoogleAuthRequestHeader() {
