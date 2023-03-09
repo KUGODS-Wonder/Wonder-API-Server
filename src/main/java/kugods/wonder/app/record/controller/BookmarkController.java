@@ -3,6 +3,7 @@ package kugods.wonder.app.record.controller;
 import kugods.wonder.app.common.dto.ApiDataResponse;
 import kugods.wonder.app.record.dto.BookmarkRequest;
 import kugods.wonder.app.record.dto.BookmarkResponse;
+import kugods.wonder.app.record.service.BookmarkService;
 import kugods.wonder.app.record.service.BookmarkServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import java.util.List;
 @RequestMapping("/api/v1/bookmarks")
 public class BookmarkController {
 
-    private final BookmarkServiceImpl bookmarkService;
+    private final BookmarkService bookmarkService;
 
     @GetMapping
     public ApiDataResponse<List<BookmarkResponse>> getBookmarkList(
