@@ -1,6 +1,7 @@
 package kugods.wonder.app.walk.entity;
 
 import kugods.wonder.app.common.entity.BaseEntity;
+import kugods.wonder.app.walk.dto.WalkResponse;
 import lombok.*;
 
 import javax.persistence.*;
@@ -52,4 +53,18 @@ public class Walk extends BaseEntity {
     @OneToMany(mappedBy = "walk")
     List<IntermediateLocation> intermediateLocations = new ArrayList<IntermediateLocation>();
 
+    public WalkResponse toResponse(Double boundary) {
+        return WalkResponse.builder()
+                .walkId(getWalkId())
+                .title(getTitle())
+                .distance(getDistance())
+                .requiredTime(getRequiredTime())
+                .theme(getTheme())
+                .originLatitude(getOriginLatitude())
+                .originLongitude(getOriginLongitude())
+                .destinationLatitude(getDestinationLatitude())
+                .destinationLongitude(getDestinationLongitude())
+                .point(getPoint())
+                .build();
+    }
 }
