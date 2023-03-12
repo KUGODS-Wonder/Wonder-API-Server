@@ -1,7 +1,14 @@
 package kugods.wonder.app.walk.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
 
+@Getter
+@ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "Tag")
 @Entity
 public class Tag {
@@ -12,8 +19,4 @@ public class Tag {
 
     @Column(length = 45, nullable = false)
     private String name;
-
-    @ManyToOne
-    @JoinColumn(name = "walk_id")
-    private Walk walk;
 }
