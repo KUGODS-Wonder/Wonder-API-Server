@@ -28,7 +28,7 @@ public class WalkServiceImpl implements WalkService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<WalkResponse> getWalk(UserLocation userLocation) {
+    public List<WalkResponse> getWalkList(UserLocation userLocation) {
         List<Tuple> results = jpaQueryFactory
                 .select(
                         walk.walkId,
@@ -72,5 +72,51 @@ public class WalkServiceImpl implements WalkService {
                         .boundary(tuple.get(10, Double.class))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public WalkResponse getWalk(Long walkId, UserLocation userLocation) {
+        Tuple findWalk =  jpaQueryFactory.
+                select(
+                        walk.walkId,
+                        walk.title,
+                        walk.distance,
+                        walk.requiredTime,
+                        walk.theme,
+                        walk.originLatitude,
+                        walk.originLongitude,
+                        walk.destinationLatitude,
+                        walk.destinationLongitude,
+                        walk.point,
+                        (numberTemplate(Double.class, "6317.0").multiply(
+                                acos(
+                                        cos(radians(walk.originLatitude))
+                                                .multiply(cos(radians(numberTemplate(BigDecimal.class, userLocation.getLatitude().toString()))))
+                                                .multiply(cos(radians(numberTemplate(BigDecimal.class, userLocation.getLongitude().toString()))
+                                                        .subtract(radians(walk.originLongitude)))
+                                                )
+                                                .add(sin(radians(walk.originLatitude))
+                                                        .multiply(sin(radians(numberTemplate(BigDecimal.class, userLocation.getLatitude().toString())))))
+                                ))
+                        ).as("boundary")
+                )
+                .from(walk)
+                .where(walk.walkId.eq(walkId))
+                .fetchOne();
+
+        return WalkResponse.builder()
+                .walkId(findWalk.get(walk.walkId))
+                .title(findWalk.get(walk.title))
+                .distance(findWalk.get(walk.distance))
+                .requiredTime(findWalk.get(walk.requiredTime))
+                .theme(findWalk.get(walk.theme))
+                .originLatitude(findWalk.get(walk.originLatitude))
+                .originLongitude(findWalk.get(walk.originLongitude))
+                .destinationLatitude(findWalk.get(walk.destinationLatitude))
+                .destinationLongitude(findWalk.get(walk.destinationLongitude))
+                .point(findWalk.get(walk.point))
+                .boundary(findWalk.get(10, Double.class))
+                .build();
     }
 }

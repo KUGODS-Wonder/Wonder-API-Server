@@ -6,5 +6,8 @@ import kugods.wonder.app.walk.dto.WalkResponse;
 import java.util.List;
 
 public interface WalkService {
-    List<WalkResponse> getWalk(UserLocation userLocation);
+    
+    List<WalkResponse> getWalkList(UserLocation userLocation);
+    
+    WalkResponse getWalk(Long walkId, UserLocation userLocation);
 }
