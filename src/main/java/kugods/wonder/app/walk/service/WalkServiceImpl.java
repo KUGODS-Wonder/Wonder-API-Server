@@ -4,6 +4,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kugods.wonder.app.walk.dto.UserLocation;
 import kugods.wonder.app.walk.dto.WalkResponse;
@@ -41,17 +42,7 @@ public class WalkServiceImpl implements WalkService {
                         walk.destinationLatitude,
                         walk.destinationLongitude,
                         walk.point,
-                        (numberTemplate(Double.class, "6317.0").multiply(
-                                acos(
-                                        cos(radians(walk.originLatitude))
-                                                .multiply(cos(radians(numberTemplate(BigDecimal.class, userLocation.getLatitude().toString()))))
-                                                .multiply(cos(radians(numberTemplate(BigDecimal.class, userLocation.getLongitude().toString()))
-                                                        .subtract(radians(walk.originLongitude)))
-                                                )
-                                                .add(sin(radians(walk.originLatitude))
-                                                        .multiply(sin(radians(numberTemplate(BigDecimal.class, userLocation.getLatitude().toString())))))
-                                ))
-                        ).as("boundary")
+                        calculateDistanceBetweenTwoPoint(userLocation).as("boundary")
                 )
                 .from(walk)
                 .orderBy(new OrderSpecifier<>(Order.ASC, Expressions.numberPath(Double.class, "boundary")))
@@ -89,17 +80,7 @@ public class WalkServiceImpl implements WalkService {
                         walk.destinationLatitude,
                         walk.destinationLongitude,
                         walk.point,
-                        (numberTemplate(Double.class, "6317.0").multiply(
-                                acos(
-                                        cos(radians(walk.originLatitude))
-                                                .multiply(cos(radians(numberTemplate(BigDecimal.class, userLocation.getLatitude().toString()))))
-                                                .multiply(cos(radians(numberTemplate(BigDecimal.class, userLocation.getLongitude().toString()))
-                                                        .subtract(radians(walk.originLongitude)))
-                                                )
-                                                .add(sin(radians(walk.originLatitude))
-                                                        .multiply(sin(radians(numberTemplate(BigDecimal.class, userLocation.getLatitude().toString())))))
-                                ))
-                        ).as("boundary")
+                        calculateDistanceBetweenTwoPoint(userLocation).as("boundary")
                 )
                 .from(walk)
                 .where(walk.walkId.eq(walkId))
@@ -118,5 +99,19 @@ public class WalkServiceImpl implements WalkService {
                 .point(findWalk.get(walk.point))
                 .boundary(findWalk.get(10, Double.class))
                 .build();
+    }
+
+
+    private NumberExpression<Double> calculateDistanceBetweenTwoPoint(UserLocation userLocation) {
+        return numberTemplate(Double.class, "6317.0").multiply(
+                acos(
+                        cos(radians(walk.originLatitude))
+                                .multiply(cos(radians(numberTemplate(BigDecimal.class, userLocation.getLatitude().toString()))))
+                                .multiply(cos(radians(numberTemplate(BigDecimal.class, userLocation.getLongitude().toString()))
+                                        .subtract(radians(walk.originLongitude)))
+                                )
+                                .add(sin(radians(walk.originLatitude))
+                                        .multiply(sin(radians(numberTemplate(BigDecimal.class, userLocation.getLatitude().toString())))))
+                ));
     }
 }
