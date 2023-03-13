@@ -3,6 +3,7 @@ package kugods.wonder.app.walk.service;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -30,8 +31,9 @@ public class WalkServiceImpl implements WalkService {
     @Override
     @Transactional(readOnly = true)
     public List<WalkResponse> getWalkList(UserLocation userLocation) {
-        List<Tuple> results = jpaQueryFactory
-                .select(
+        return jpaQueryFactory
+            .selectFrom(walk)
+                .select(Projections.constructor(WalkResponse.class,
                         walk.walkId,
                         walk.title,
                         walk.distance,
@@ -43,33 +45,16 @@ public class WalkServiceImpl implements WalkService {
                         walk.destinationLongitude,
                         walk.point,
                         calculateDistanceBetweenTwoPoint(userLocation).as("boundary")
-                )
-                .from(walk)
-                .orderBy(new OrderSpecifier<>(Order.ASC, Expressions.numberPath(Double.class, "boundary")))
+                ))
+                .orderBy(Expressions.numberPath(Double.class, "boundary").asc())
                 .fetch();
-
-        return results.stream()
-                .map(tuple -> WalkResponse.builder()
-                        .walkId(tuple.get(walk.walkId))
-                        .title(tuple.get(walk.title))
-                        .distance(tuple.get(walk.distance))
-                        .requiredTime(tuple.get(walk.requiredTime))
-                        .theme(tuple.get(walk.theme))
-                        .originLatitude(tuple.get(walk.originLatitude))
-                        .originLongitude(tuple.get(walk.originLongitude))
-                        .destinationLatitude(tuple.get(walk.destinationLatitude))
-                        .destinationLongitude(tuple.get(walk.destinationLongitude))
-                        .point(tuple.get(walk.point))
-                        .boundary(tuple.get(10, Double.class))
-                        .build())
-                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
     public WalkResponse getWalk(Long walkId, UserLocation userLocation) {
-        Tuple findWalk =  jpaQueryFactory.
-                select(
+        return jpaQueryFactory
+                .select(Projections.constructor(WalkResponse.class,
                         walk.walkId,
                         walk.title,
                         walk.distance,
@@ -81,24 +66,10 @@ public class WalkServiceImpl implements WalkService {
                         walk.destinationLongitude,
                         walk.point,
                         calculateDistanceBetweenTwoPoint(userLocation).as("boundary")
-                )
+                ))
                 .from(walk)
                 .where(walk.walkId.eq(walkId))
                 .fetchOne();
-
-        return WalkResponse.builder()
-                .walkId(findWalk.get(walk.walkId))
-                .title(findWalk.get(walk.title))
-                .distance(findWalk.get(walk.distance))
-                .requiredTime(findWalk.get(walk.requiredTime))
-                .theme(findWalk.get(walk.theme))
-                .originLatitude(findWalk.get(walk.originLatitude))
-                .originLongitude(findWalk.get(walk.originLongitude))
-                .destinationLatitude(findWalk.get(walk.destinationLatitude))
-                .destinationLongitude(findWalk.get(walk.destinationLongitude))
-                .point(findWalk.get(walk.point))
-                .boundary(findWalk.get(10, Double.class))
-                .build();
     }
 
 
