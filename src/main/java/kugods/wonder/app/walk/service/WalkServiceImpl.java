@@ -1,21 +1,19 @@
 package kugods.wonder.app.walk.service;
 
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kugods.wonder.app.walk.dto.UserLocation;
 import kugods.wonder.app.walk.dto.WalkResponse;
+import kugods.wonder.app.walk.exception.WalkDoesNotExistException;
+import kugods.wonder.app.walk.repository.WalkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
 import static com.querydsl.core.types.dsl.MathExpressions.*;
@@ -27,12 +25,14 @@ public class WalkServiceImpl implements WalkService {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    private final WalkRepository walkRepository;
+
 
     @Override
     @Transactional(readOnly = true)
     public List<WalkResponse> getWalkList(UserLocation userLocation) {
         return jpaQueryFactory
-            .selectFrom(walk)
+                .selectFrom(walk)
                 .select(Projections.constructor(WalkResponse.class,
                         walk.walkId,
                         walk.title,
@@ -53,6 +53,7 @@ public class WalkServiceImpl implements WalkService {
     @Override
     @Transactional(readOnly = true)
     public WalkResponse getWalk(Long walkId, UserLocation userLocation) {
+        validateWalkExists(walkId);
         return jpaQueryFactory
                 .select(Projections.constructor(WalkResponse.class,
                         walk.walkId,
@@ -72,7 +73,6 @@ public class WalkServiceImpl implements WalkService {
                 .fetchOne();
     }
 
-
     private NumberExpression<Double> calculateDistanceBetweenTwoPoint(UserLocation userLocation) {
         return numberTemplate(Double.class, "6317.0").multiply(
                 acos(
@@ -84,5 +84,11 @@ public class WalkServiceImpl implements WalkService {
                                 .add(sin(radians(walk.originLatitude))
                                         .multiply(sin(radians(numberTemplate(BigDecimal.class, userLocation.getLatitude().toString())))))
                 ));
+    }
+
+    private void validateWalkExists(Long walkId) {
+        if (walkRepository.findById(walkId).isEmpty()) {
+            throw new WalkDoesNotExistException();
+        }
     }
 }
