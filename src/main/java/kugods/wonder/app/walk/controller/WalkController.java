@@ -7,10 +7,7 @@ import kugods.wonder.app.walk.service.WalkService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +23,14 @@ public class WalkController {
     public ApiDataResponse<List<WalkResponse>> getWalkList(
             @Validated @RequestBody UserLocation userLocation
     ) {
-        return ApiDataResponse.of(walkService.getWalk(userLocation));
+        return ApiDataResponse.of(walkService.getWalkList(userLocation));
+    }
+
+    @GetMapping("/{walkId}")
+    public ApiDataResponse<WalkResponse> getWalkList(
+            @Validated @RequestBody UserLocation userLocation,
+            @PathVariable Long walkId
+    ) {
+        return ApiDataResponse.of(walkService.getWalk(walkId, userLocation));
     }
 }
