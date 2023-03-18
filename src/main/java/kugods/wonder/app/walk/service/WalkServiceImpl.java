@@ -18,6 +18,9 @@ import java.util.List;
 import static com.querydsl.core.types.dsl.Expressions.numberTemplate;
 import static com.querydsl.core.types.dsl.MathExpressions.*;
 import static kugods.wonder.app.walk.entity.QWalk.walk;
+import static kugods.wonder.app.walk.entity.QIntermediateLocation.intermediateLocation;
+import static kugods.wonder.app.walk.entity.QWalkTagMatch.walkTagMatch;
+import static kugods.wonder.app.walk.entity.QTag.tag;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +35,6 @@ public class WalkServiceImpl implements WalkService {
     @Transactional(readOnly = true)
     public List<WalkResponse> getWalkList(UserLocation userLocation) {
         return jpaQueryFactory
-                .selectFrom(walk)
                 .select(Projections.constructor(WalkResponse.class,
                         walk.walkId,
                         walk.title,
@@ -44,8 +46,16 @@ public class WalkServiceImpl implements WalkService {
                         walk.destinationLatitude,
                         walk.destinationLongitude,
                         walk.point,
-                        calculateDistanceBetweenTwoPoint(userLocation).as("boundary")
+                        calculateDistanceBetweenTwoPoint(userLocation).as("boundary"),
+                        intermediateLocation,
+                        tag
                 ))
+                .from(walk)
+                .leftJoin(walk.intermediateLocations, intermediateLocation)
+                .leftJoin(walk.walkTagMatches, walkTagMatch)
+                .leftJoin(walkTagMatch.tag, tag)
+                .fetchJoin()
+                .distinct()
                 .orderBy(Expressions.numberPath(Double.class, "boundary").asc())
                 .fetch();
     }
@@ -66,9 +76,16 @@ public class WalkServiceImpl implements WalkService {
                         walk.destinationLatitude,
                         walk.destinationLongitude,
                         walk.point,
-                        calculateDistanceBetweenTwoPoint(userLocation).as("boundary")
+                        calculateDistanceBetweenTwoPoint(userLocation).as("boundary"),
+                        intermediateLocation,
+                        tag
                 ))
                 .from(walk)
+                .leftJoin(walk.intermediateLocations, intermediateLocation)
+                .leftJoin(walk.walkTagMatches, walkTagMatch)
+                .leftJoin(walkTagMatch.tag, tag)
+                .fetchJoin()
+                .distinct()
                 .where(walk.walkId.eq(walkId))
                 .fetchOne();
     }

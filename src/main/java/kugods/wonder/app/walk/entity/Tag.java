@@ -4,6 +4,8 @@ import kugods.wonder.app.common.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @ToString
@@ -20,4 +22,8 @@ public class Tag extends BaseEntity {
 
     @Column(length = 45, nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "tag")
+    private List<WalkTagMatch> walkTagMatches = new ArrayList<>();
+
 }

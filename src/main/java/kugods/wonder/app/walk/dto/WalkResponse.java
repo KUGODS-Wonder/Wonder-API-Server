@@ -34,4 +34,8 @@ public class WalkResponse {
     private Integer point;
 
     private Double boundary;
+
+    private List<IntermediateLocation> intermediateLocations;
+
+    private List<Tag> tagList;
 }
