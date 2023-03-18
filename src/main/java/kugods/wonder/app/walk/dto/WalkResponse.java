@@ -1,7 +1,5 @@
 package kugods.wonder.app.walk.dto;
 
-import kugods.wonder.app.walk.entity.IntermediateLocation;
-import kugods.wonder.app.walk.entity.Tag;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -35,7 +33,7 @@ public class WalkResponse {
 
     private Double boundary;
 
-    private List<IntermediateLocation> intermediateLocations;
+    private List<IntermediateLocationInfo> intermediateLocations;
 
-    private List<Tag> tagList;
+    private List<TagInfo> tagList;
 }
