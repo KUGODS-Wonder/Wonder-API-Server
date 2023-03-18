@@ -2,10 +2,6 @@ package kugods.wonder.app.walk.dto;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.math.BigDecimal;
 
 @Getter
@@ -13,7 +9,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class IntermediateLocationResponse {
+public class IntermediateLocationInfo {
 
     private Long intermediateLocationId;
 
