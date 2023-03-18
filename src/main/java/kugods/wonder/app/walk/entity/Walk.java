@@ -26,6 +26,9 @@ public class Walk extends BaseEntity {
     @Column(length = 45, nullable = false)
     private String title;
 
+    @Column(length = 100)
+    private String address;
+
     @Column(nullable = false)
     private Double distance;
 

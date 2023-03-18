@@ -1,5 +1,6 @@
 package kugods.wonder.app.walk.entity;
 
+import kugods.wonder.app.common.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "Tag")
 @Entity
-public class Tag {
+public class Tag extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
