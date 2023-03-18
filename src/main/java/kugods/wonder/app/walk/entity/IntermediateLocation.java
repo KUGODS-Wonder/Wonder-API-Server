@@ -1,14 +1,14 @@
 package kugods.wonder.app.walk.entity;
 
 import kugods.wonder.app.common.entity.BaseEntity;
-import kugods.wonder.app.walk.dto.IntermediateLocationResponse;
+import kugods.wonder.app.walk.dto.IntermediateLocationInfo;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Table(name = "IntermediateLocation")
 @Entity
-public class IntermediateLocation extends BaseEntity {
+public class IntermediateLocation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +24,8 @@ public class IntermediateLocation extends BaseEntity {
     @JoinColumn(name = "walk_id")
     private Walk walk;
 
-    public IntermediateLocationResponse toResponse() {
-        return IntermediateLocationResponse.builder()
+    public IntermediateLocationInfo toResponse() {
+        return IntermediateLocationInfo.builder()
                 .intermediateLocationId(intermediateLocationId)
                 .latitude(latitude)
                 .longitude(longitude)

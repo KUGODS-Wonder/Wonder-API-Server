@@ -3,14 +3,13 @@ package kugods.wonder.app.walk.dto;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WalkResponse {
+public class WalkInfo {
     private Long walkId;
 
     private String title;
@@ -32,8 +31,5 @@ public class WalkResponse {
     private Integer point;
 
     private Double boundary;
-
-    private List<IntermediateLocationInfo> intermediateLocations;
-
-    private List<TagInfo> tagList;
 }
+
