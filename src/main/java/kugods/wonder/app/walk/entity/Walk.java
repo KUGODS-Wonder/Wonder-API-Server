@@ -53,18 +53,7 @@ public class Walk extends BaseEntity {
     @OneToMany(mappedBy = "walk")
     List<IntermediateLocation> intermediateLocations = new ArrayList<IntermediateLocation>();
 
-    public WalkResponse toResponse(Double boundary) {
-        return WalkResponse.builder()
-                .walkId(getWalkId())
-                .title(getTitle())
-                .distance(getDistance())
-                .requiredTime(getRequiredTime())
-                .theme(getTheme())
-                .originLatitude(getOriginLatitude())
-                .originLongitude(getOriginLongitude())
-                .destinationLatitude(getDestinationLatitude())
-                .destinationLongitude(getDestinationLongitude())
-                .point(getPoint())
-                .build();
-    }
+    @OneToMany(mappedBy = "walk")
+    private List<WalkTagMatch> walkTagMatches = new ArrayList<>();
+
 }

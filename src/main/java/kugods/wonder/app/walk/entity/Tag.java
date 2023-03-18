@@ -3,6 +3,8 @@ package kugods.wonder.app.walk.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @ToString
@@ -19,4 +21,8 @@ public class Tag {
 
     @Column(length = 45, nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "tag")
+    private List<WalkTagMatch> walkTagMatches = new ArrayList<>();
+
 }
