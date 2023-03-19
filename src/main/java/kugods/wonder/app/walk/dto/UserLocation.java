@@ -14,4 +14,11 @@ public class UserLocation {
     private BigDecimal latitude;
 
     private BigDecimal longitude;
+
+    public static UserLocation to(BigDecimal latitude, BigDecimal longitude) {
+        return UserLocation.builder()
+                .latitude(latitude)
+                .longitude(longitude)
+                .build();
+    }
 }

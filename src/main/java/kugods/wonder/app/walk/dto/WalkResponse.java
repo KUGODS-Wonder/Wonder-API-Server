@@ -11,13 +11,31 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WalkResponse {
+    public WalkResponse(
+            Long walkId, String title, Double pathDistance, Integer requiredTime, String address, String theme, BigDecimal originLatitude,BigDecimal originLongitude,BigDecimal destinationLatitude,BigDecimal destinationLongitude,Integer point,Double distanceToUser
+    ) {
+        this.walkId = walkId;
+        this.title = title;
+        this.pathDistance = pathDistance;
+        this.requiredTime = requiredTime;
+        this.address = address;
+        this.theme = theme;
+        this.originLatitude = originLatitude;
+        this.originLongitude = originLongitude;
+        this.destinationLatitude =destinationLatitude;
+        this.destinationLongitude = destinationLongitude;
+        this.point = point;
+        this.distanceToUser = distanceToUser;
+    }
     private Long walkId;
 
     private String title;
 
-    private Double distance;
+    private Double pathDistance;
 
     private Integer requiredTime;
+
+    private String address;
 
     private String theme;
 
@@ -31,9 +49,10 @@ public class WalkResponse {
 
     private Integer point;
 
-    private Double boundary;
+    private Double distanceToUser;
 
-    private List<IntermediateLocationInfo> intermediateLocations;
+    private List<IntermediateLocationInfo> intermediateLocationList;
 
     private List<TagInfo> tagList;
 }
+
