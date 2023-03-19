@@ -1,7 +1,6 @@
 package kugods.wonder.app.walk.entity;
 
 import kugods.wonder.app.common.entity.BaseEntity;
-import kugods.wonder.app.walk.dto.WalkResponse;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,7 +29,7 @@ public class Walk extends BaseEntity {
     private String address;
 
     @Column(nullable = false)
-    private Double distance;
+    private Double pathDistance;
 
     @Column(name = "required_time", nullable = false)
     private Integer requiredTime;

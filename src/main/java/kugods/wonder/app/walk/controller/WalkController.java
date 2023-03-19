@@ -2,8 +2,8 @@ package kugods.wonder.app.walk.controller;
 
 import kugods.wonder.app.common.dto.ApiDataResponse;
 import kugods.wonder.app.walk.dto.UserLocation;
-import kugods.wonder.app.walk.dto.WalkInfo;
 import kugods.wonder.app.walk.dto.WalkResponse;
+import kugods.wonder.app.walk.dto.WalkListRequest;
 import kugods.wonder.app.walk.service.WalkService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +21,10 @@ public class WalkController {
     private final WalkService walkService;
 
     @GetMapping
-    public ApiDataResponse<List<WalkInfo>> getWalkList(
-            @Validated @RequestBody UserLocation userLocation
+    public ApiDataResponse<List<WalkResponse>> getWalkList(
+            @Validated @RequestBody WalkListRequest request
     ) {
-        return ApiDataResponse.of(walkService.getWalkList(userLocation));
+        return ApiDataResponse.of(walkService.getWalkList(request));
     }
 
     @GetMapping("/{walkId}")
