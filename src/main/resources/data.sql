@@ -1,1 +1,0 @@
-INSERT INTO tier (min_point_to_upgrade, name) values (100, 'bronze 5');
