@@ -7,7 +7,7 @@ import kugods.wonder.app.auth.dto.*;
 import kugods.wonder.app.auth.exception.DuplicatedEmailException;
 import kugods.wonder.app.auth.exception.InvalidGoogleToken;
 import kugods.wonder.app.auth.exception.InvalidPasswordException;
-import kugods.wonder.app.auth.exception.MemberDoesNotExistException;
+import kugods.wonder.app.member.exception.MemberDoesNotExistException;
 import kugods.wonder.app.member.entity.Authority;
 import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.member.repository.MemberRepository;

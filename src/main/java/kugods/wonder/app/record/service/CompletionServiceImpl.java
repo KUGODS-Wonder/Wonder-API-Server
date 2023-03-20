@@ -1,6 +1,6 @@
 package kugods.wonder.app.record.service;
 
-import kugods.wonder.app.auth.exception.MemberDoesNotExistException;
+import kugods.wonder.app.member.exception.MemberDoesNotExistException;
 import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.member.repository.MemberRepository;
 import kugods.wonder.app.record.dto.CompletionRequest;
