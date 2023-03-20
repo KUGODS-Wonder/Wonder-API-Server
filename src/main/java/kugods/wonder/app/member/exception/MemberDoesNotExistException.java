@@ -1,4 +1,4 @@
-package kugods.wonder.app.auth.exception;
+package kugods.wonder.app.member.exception;
 
 import kugods.wonder.app.common.constant.ErrorCode;
 import kugods.wonder.app.common.exception.GeneralException;
