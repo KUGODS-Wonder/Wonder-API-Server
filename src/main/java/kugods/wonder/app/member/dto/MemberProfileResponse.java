@@ -1,6 +1,5 @@
 package kugods.wonder.app.member.dto;
 
-import kugods.wonder.app.record.entity.Tier;
 import lombok.*;
 
 import java.util.List;
@@ -12,21 +11,39 @@ import java.util.List;
 @NoArgsConstructor
 public class MemberProfileResponse {
 
+    public MemberProfileResponse(
+            Long memberId,
+            String name,
+            String email,
+            String address,
+            Integer totalPoint,
+            Double totalDistance,
+            Integer totalWalkingTime
+    ) {
+        this.memberId = memberId;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.totalPoint = totalPoint;
+        this.totalDistance = totalDistance;
+        this.totalWalkingTime = totalWalkingTime;
+    }
+
     private Long memberId;
 
     private String name;
 
     private String email;
 
-    private Tier tier;
+    private String address;
+
+    private TierInfo tierInfo;
 
     private Integer totalPoint;
 
-    private Integer totalWalkingTime;
-
     private Double totalDistance;
 
-    private String address;
+    private Integer totalWalkingTime;
 
     private List<UserWalkingRecord> localRanking;
 

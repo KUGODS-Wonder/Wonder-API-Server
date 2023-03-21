@@ -12,7 +12,18 @@ import java.util.List;
 @NoArgsConstructor
 public class WalkResponse {
     public WalkResponse(
-            Long walkId, String title, Double pathDistance, Integer requiredTime, String address, String theme, BigDecimal originLatitude,BigDecimal originLongitude,BigDecimal destinationLatitude,BigDecimal destinationLongitude,Integer point,Double distanceToUser
+            Long walkId,
+            String title,
+            Double pathDistance,
+            Integer requiredTime,
+            String address,
+            String theme,
+            BigDecimal originLatitude,
+            BigDecimal originLongitude,
+            BigDecimal destinationLatitude,
+            BigDecimal destinationLongitude,
+            Integer point,
+            Double distanceToUser
     ) {
         this.walkId = walkId;
         this.title = title;
