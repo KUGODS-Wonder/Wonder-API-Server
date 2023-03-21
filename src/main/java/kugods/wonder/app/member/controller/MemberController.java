@@ -17,7 +17,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/profile/{email}")
+    @GetMapping("/profile")
     public ApiDataResponse<MemberProfileResponse> getProfile(
             Authentication auth
     ) {
