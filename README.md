@@ -5,4 +5,4 @@
 [Gitbook](https://cksgh1735.gitbook.io/wonder/)
 
 ## ERD
-![Untitled](https://user-images.githubusercontent.com/83508073/223981009-4ddbbe7a-e878-4e62-98b6-581cffc3ecc5.png)
+![image](https://user-images.githubusercontent.com/83508073/226541680-70d95739-e328-4c81-8edf-c94f08548b5f.png)
