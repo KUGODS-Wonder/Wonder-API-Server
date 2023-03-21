@@ -7,11 +7,10 @@ import kugods.wonder.app.auth.dto.*;
 import kugods.wonder.app.auth.exception.DuplicatedEmailException;
 import kugods.wonder.app.auth.exception.InvalidGoogleToken;
 import kugods.wonder.app.auth.exception.InvalidPasswordException;
-import kugods.wonder.app.member.exception.MemberDoesNotExistException;
 import kugods.wonder.app.member.entity.Authority;
 import kugods.wonder.app.member.entity.Member;
+import kugods.wonder.app.member.exception.MemberDoesNotExistException;
 import kugods.wonder.app.member.repository.MemberRepository;
-import kugods.wonder.app.record.repository.TierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ import java.util.Collections;
 public class AuthServiceImpl implements AuthService {
 
     private final MemberRepository memberRepository;
-    private final TierRepository tierRepository;
     private final TokenProvider tokenProvider;
     private final GoogleUserInfoProvider googleUserInfoProvider;
 
@@ -55,7 +53,6 @@ public class AuthServiceImpl implements AuthService {
                 .password(CustomPasswordEncoder.hashPassword(request.getPassword()))
                 .name(request.getName())
                 .address(request.getAddress())
-                .tier(tierRepository.findById(1L).orElseThrow()) // 브론즈5에서 시작.
                 .build();
         member.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
         memberRepository.save(member);
@@ -99,7 +96,6 @@ public class AuthServiceImpl implements AuthService {
                 .password(DEFAULT_OAUTH_GOOGLE_PASSWORD) // 소셜 로그인
                 .name(request.getName())
                 .address(request.getAddress())
-                .tier(tierRepository.findById(1L).orElseThrow()) // 브론즈5에서 시작.
                 .build();
         member.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
         memberRepository.save(member);
