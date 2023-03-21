@@ -19,9 +19,8 @@ public class MemberController {
 
     @GetMapping("/profile/{email}")
     public ApiDataResponse<MemberProfileResponse> getProfile(
-            Authentication auth,
-            @PathVariable String email // for test
+            Authentication auth
     ) {
-        return ApiDataResponse.of(memberService.getProfile(email));
+        return ApiDataResponse.of(memberService.getProfile(auth.getName()));
     }
 }
