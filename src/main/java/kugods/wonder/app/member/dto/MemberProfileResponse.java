@@ -45,7 +45,9 @@ public class MemberProfileResponse {
 
     private Integer totalWalkingTime;
 
-    private List<UserWalkingRecord> localRanking;
+    private Integer myRanking;
+
+    private List<UserWalkingRecord> localRankingTopFive;
 
     // To do: 메달 리스트
 }
