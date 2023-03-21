@@ -100,7 +100,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private MemberProfileResponse getProfileByEmail(String email) {
-        MemberProfileResponse profile = jpaQueryFactory
+        return jpaQueryFactory
                 .select(Projections.constructor(MemberProfileResponse.class,
                         member.memberId,
                         member.name,
@@ -115,6 +115,5 @@ public class MemberServiceImpl implements MemberService {
                 .leftJoin(walk).on(walk.eq(completion.walk))
                 .where(member.email.eq(email))
                 .fetchOne();
-        return profile;
     }
 }
