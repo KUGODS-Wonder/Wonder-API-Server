@@ -106,9 +106,9 @@ public class MemberServiceImpl implements MemberService {
                         member.name,
                         member.email,
                         member.address,
-                        walk.point.sum().as("totalPoint"),
-                        walk.pathDistance.sum().as("totalDistance"),
-                        completion.timeRecord.sum().as("totalWalkingTime")
+                        walk.point.sum().coalesce(0).as("totalPoint"),
+                        walk.pathDistance.sum().coalesce(0.0).as("totalDistance"),
+                        completion.timeRecord.sum().coalesce(0).as("totalWalkingTime")
                 ))
                 .from(member)
                 .leftJoin(completion).on(member.eq(completion.member))
