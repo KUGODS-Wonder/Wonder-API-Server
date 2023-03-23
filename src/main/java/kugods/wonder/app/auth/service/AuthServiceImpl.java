@@ -82,6 +82,14 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+    @Override
+    public CheckMemberResponse checkMember(CheckMemberRequest request) {
+        return CheckMemberResponse.builder()
+                .email(request.getEmail())
+                .isRegistered(memberRepository.findOneByEmail(request.getEmail()).isPresent())
+                .build();
+    }
+
     private SigninResponse googleLoginResponse(OauthLoginReqeust request, boolean whetherSignUp) {
         if (whetherSignUp) {
             return googleLoginWithoutSignUp(request);

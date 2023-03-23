@@ -46,4 +46,11 @@ public class AuthController {
     ) {
         return ApiDataResponse.of(authService.checkNameDuplication(name));
     }
+
+    @PostMapping("/check-member")
+    public ApiDataResponse<CheckMemberResponse> checkMember(
+            @Validated @RequestBody CheckMemberRequest request
+    ) {
+        return ApiDataResponse.of(authService.checkMember(request));
+    }
 }

@@ -10,4 +10,6 @@ public interface AuthService {
     SigninResponse googleLogin(OauthLoginReqeust request, String googleToken);
 
     CheckNameResponse checkNameDuplication(String name);
+
+    CheckMemberResponse checkMember(CheckMemberRequest request);
 }
