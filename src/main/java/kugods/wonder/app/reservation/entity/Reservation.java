@@ -1,6 +1,7 @@
 package kugods.wonder.app.reservation.entity;
 
 import kugods.wonder.app.member.entity.Member;
+import kugods.wonder.app.reservation.dto.MakeReservationsResponse;
 import kugods.wonder.app.walk.entity.Walk;
 import lombok.*;
 
@@ -27,5 +28,12 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voluntary_work_id")
     private VoluntaryWork voluntaryWork;
+
+    public MakeReservationsResponse toResponse() {
+        return MakeReservationsResponse.builder()
+                .reservationId(getReservationId())
+                .voluntaryWorkId(getVoluntaryWork().getVoluntaryWorkId())
+                .build();
+    }
 
 }
