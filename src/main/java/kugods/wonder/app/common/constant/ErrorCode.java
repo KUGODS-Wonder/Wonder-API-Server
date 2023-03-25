@@ -30,7 +30,10 @@ public enum ErrorCode {
     DUPLICATED_NAME(1005, HttpStatus.BAD_REQUEST, "Duplicated name"),
     WALK_DOES_NOT_EXIST(1006, HttpStatus.BAD_REQUEST, "Walk does not exist"),
     DUPLICATED_BOOKMARK(1007, HttpStatus.BAD_REQUEST, "Duplicated bookmark"),
-    BOOKMARK_DOES_NOT_EXIST(1008,HttpStatus.BAD_REQUEST, "Bookmark does not exist"),
+    BOOKMARK_DOES_NOT_EXIST(1008, HttpStatus.BAD_REQUEST, "Bookmark does not exist"),
+    VOLUNTARY_WORK_NOT_EXIST(1009, HttpStatus.BAD_REQUEST, "Voluntary work does not exist"),
+    DuPLICATED_RESERVATION(1010, HttpStatus.BAD_REQUEST, "Duplicated reservation"),
+    RESERVATION_NOT_EXIST(1011, HttpStatus.BAD_REQUEST, "Reservation does not exits"),
 
     INVALID_GOOGLE_TOKEN(1100, HttpStatus.BAD_REQUEST, "Invalid Google Token");
 

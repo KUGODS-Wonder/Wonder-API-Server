@@ -1,15 +1,15 @@
 package kugods.wonder.app.reservation.controller;
 
 import kugods.wonder.app.common.dto.ApiDataResponse;
+import kugods.wonder.app.reservation.dto.MakeReservationsResponse;
+import kugods.wonder.app.reservation.dto.ReservationRequest;
 import kugods.wonder.app.reservation.dto.ReservationResponse;
 import kugods.wonder.app.reservation.dto.VoluntaryWorkResponse;
 import kugods.wonder.app.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +31,27 @@ public class ReservationController {
             Authentication auth
     ) {
         return ApiDataResponse.of(reservationService.getReservationList(auth.getName()));
+    }
+
+    @PostMapping("/{voluntaryWorkId}")
+    public ApiDataResponse<MakeReservationsResponse> makeReservations(
+            Authentication auth,
+            @PathVariable("voluntaryWorkId") Long voluntaryWorkId
+    ) {
+        return ApiDataResponse.of(
+                reservationService.makeReservations(ReservationRequest.builder()
+                        .email(auth.getName())
+                        .voluntaryWorkId(voluntaryWorkId)
+                        .build())
+        );
+    }
+
+    @DeleteMapping("/cancel/{reservationId}")
+    public ApiDataResponse<MakeReservationsResponse> cancelReservations(
+            @PathVariable("reservationId") Long reservationId
+    ) {
+        return ApiDataResponse.of(
+                reservationService.cancelReservations(reservationId)
+        );
     }
 }
