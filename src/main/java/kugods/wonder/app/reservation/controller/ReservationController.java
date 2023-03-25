@@ -1,10 +1,12 @@
 package kugods.wonder.app.reservation.controller;
 
 import kugods.wonder.app.common.dto.ApiDataResponse;
+import kugods.wonder.app.reservation.dto.ReservationResponse;
 import kugods.wonder.app.reservation.dto.VoluntaryWorkResponse;
 import kugods.wonder.app.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,5 +24,12 @@ public class ReservationController {
     @GetMapping
     public ApiDataResponse<List<VoluntaryWorkResponse>> getReservations() {
         return ApiDataResponse.of(reservationService.getVoluntaryWorkList());
+    }
+
+    @GetMapping("/mine")
+    public ApiDataResponse<List<ReservationResponse>> getMyReservations(
+            Authentication auth
+    ) {
+        return ApiDataResponse.of(reservationService.getReservationList(auth.getName()));
     }
 }
