@@ -53,7 +53,16 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional(readOnly = true)
     public List<ReservationResponse> getReservationList(String email) {
-        List<ReservationResponse> reservationList = jpaQueryFactory
+        List<ReservationResponse> reservationList = getReservationList();
+        List<Long> myReservations = getMyReservations(email);
+
+        return reservationList.stream()
+                .filter(reservationInfo -> myReservations.contains(reservationInfo.getVoluntaryWorkId()))
+                .collect(Collectors.toList());
+    }
+
+    private List<ReservationResponse> getReservationList() {
+        return jpaQueryFactory
                 .select(Projections.constructor(ReservationResponse.class,
                         voluntaryWork.voluntaryWorkId,
                         voluntaryWork.walk.walkId,
@@ -68,34 +77,36 @@ public class ReservationServiceImpl implements ReservationService {
                 .join(reservation).on(voluntaryWork.eq(reservation.voluntaryWork))
                 .groupBy(voluntaryWork.voluntaryWorkId)
                 .fetch();
+    }
 
-        List<Long> myReservations = jpaQueryFactory.
+    private List<Long> getMyReservations(String email) {
+        return jpaQueryFactory.
                 select(voluntaryWork.voluntaryWorkId)
                 .from(voluntaryWork)
                 .join(reservation).on(voluntaryWork.eq(reservation.voluntaryWork))
                 .where(reservation.member.email.eq(email))
                 .fetch();
-
-        return reservationList.stream()
-                .filter(reservationInfo -> myReservations.contains(reservationInfo.getVoluntaryWorkId()))
-                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public MakeReservationsResponse makeReservations(ReservationRequest request) {
         validateReservationDuplication(request.getEmail(), request.getVoluntaryWorkId());
+        Reservation reservation = getReservation(request);
+        reservationRepository.save(reservation);
+
+        return reservation.toResponse();
+    }
+
+    private Reservation getReservation(ReservationRequest request) {
         Member member = memberRepository.findOneByEmail(request.getEmail())
                 .orElseThrow(MemberDoesNotExistException::new);
         VoluntaryWork voluntaryWork = voluntaryWorkRepository.findById(request.getVoluntaryWorkId())
                 .orElseThrow(VoluntaryWorkDoesNotExistException::new);
-        Reservation reservation = Reservation.builder()
+        return Reservation.builder()
                 .member(member)
                 .voluntaryWork(voluntaryWork)
                 .build();
-        reservationRepository.save(reservation);
-
-        return reservation.toResponse();
     }
 
     @Override
