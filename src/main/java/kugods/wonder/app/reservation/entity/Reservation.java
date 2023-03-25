@@ -28,7 +28,4 @@ public class Reservation {
     @JoinColumn(name = "voluntary_work_id")
     private VoluntaryWork voluntaryWork;
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
-    private boolean isAccepted = false;
-
 }
