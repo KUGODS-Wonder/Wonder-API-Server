@@ -2,13 +2,11 @@ package kugods.wonder.app.reservation.service;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kugods.wonder.app.common.exception.GeneralException;
 import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.member.exception.MemberDoesNotExistException;
 import kugods.wonder.app.member.repository.MemberRepository;
-import kugods.wonder.app.reservation.dto.MakeReservationsResponse;
-import kugods.wonder.app.reservation.dto.ReservationRequest;
-import kugods.wonder.app.reservation.dto.ReservationResponse;
-import kugods.wonder.app.reservation.dto.VoluntaryWorkResponse;
+import kugods.wonder.app.reservation.dto.*;
 import kugods.wonder.app.reservation.entity.Reservation;
 import kugods.wonder.app.reservation.entity.VoluntaryWork;
 import kugods.wonder.app.reservation.exception.DuplicatedReservationException;
@@ -22,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,10 +53,20 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional(readOnly = true)
     public List<ReservationResponse> getReservationList(String email) {
         List<ReservationResponse> reservationList = getReservationList();
-        List<Long> myReservations = getMyReservations(email);
+        List<MyReservationInfo> myReservations = getMyReservations(email);
+
+        List<Long> voluntaryWorkIdList = myReservations.stream()
+                .map(MyReservationInfo::getVoluntaryWorkId)
+                .collect(Collectors.toList());
 
         return reservationList.stream()
-                .filter(reservationInfo -> myReservations.contains(reservationInfo.getVoluntaryWorkId()))
+                .filter(reservationInfo -> voluntaryWorkIdList.contains(reservationInfo.getVoluntaryWorkId()))
+                .peek(reservationInfo -> reservationInfo.setReservationId(
+                        myReservations.stream()
+                                .filter(myReservation -> myReservation.getVoluntaryWorkId().equals(reservationInfo.getVoluntaryWorkId()))
+                                .map(MyReservationInfo::getReservationId)
+                                .collect(Collectors.toList()).get(0)
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -79,9 +88,11 @@ public class ReservationServiceImpl implements ReservationService {
                 .fetch();
     }
 
-    private List<Long> getMyReservations(String email) {
+    private List<MyReservationInfo> getMyReservations(String email) {
         return jpaQueryFactory.
-                select(voluntaryWork.voluntaryWorkId)
+                select(Projections.constructor(MyReservationInfo.class,
+                        voluntaryWork.voluntaryWorkId,
+                        reservation.reservationId))
                 .from(voluntaryWork)
                 .join(reservation).on(voluntaryWork.eq(reservation.voluntaryWork))
                 .where(reservation.member.email.eq(email))
