@@ -3,6 +3,7 @@ package kugods.wonder.app.reservation.dto;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -15,7 +16,8 @@ public class ReservationResponse {
             Long voluntaryWorkId,
             Long walkId,
             LocalDate startDate,
-            String description,
+            LocalTime startTime,
+            LocalTime endTime,
             String specificAddress,
             Integer maxPeopleNumber,
             Long currentPeopleNumber,
@@ -24,7 +26,8 @@ public class ReservationResponse {
         this.voluntaryWorkId = voluntaryWorkId;
         this.walkId = walkId;
         this.startDate = startDate;
-        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.specificAddress = specificAddress;
         this.maxPeopleNumber = maxPeopleNumber;
         this.currentPeopleNumber = currentPeopleNumber;
@@ -39,7 +42,9 @@ public class ReservationResponse {
 
     private LocalDate startDate;
 
-    private String description;
+    private LocalTime startTime;
+
+    private LocalTime endTime;
 
     private String specificAddress;
 

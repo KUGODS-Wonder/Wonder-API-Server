@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @ToString
@@ -41,7 +42,10 @@ public class VoluntaryWork {
     private LocalDate startDate;
 
     @Column(nullable = false)
-    private String description;
+    private LocalTime startTime;
+
+    @Column(nullable = false)
+    private LocalTime endTime;
 
     @Column(nullable = false)
     private Integer maxPeopleNumber;
