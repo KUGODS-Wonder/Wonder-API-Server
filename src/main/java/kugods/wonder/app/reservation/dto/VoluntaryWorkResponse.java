@@ -2,6 +2,9 @@ package kugods.wonder.app.reservation.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Getter
 @Setter
 @Builder
@@ -17,4 +20,10 @@ public class VoluntaryWorkResponse {
     private String institution;
 
     private String specificAddress;
+
+    private LocalDate startDate;
+
+    private LocalTime startTime;
+
+    private LocalTime endTime;
 }

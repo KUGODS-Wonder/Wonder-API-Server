@@ -60,6 +60,9 @@ public class VoluntaryWork {
                 .specialTheme(specialTheme)
                 .institution(institution)
                 .specificAddress(specificAddress)
+                .startDate(startDate)
+                .startTime(startTime)
+                .endTime(endTime)
                 .build();
     }
 
