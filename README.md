@@ -14,12 +14,11 @@ Chanho Park                     | Keo Kim    | Boyoung Kim | SeoKyung Baek |
 
 
 # About our solution
-Our service is designed to solve the problem of the lack of physical activity of modern people. We tried to solve this problem through walking exercises that anyone can start easily and lightly.
+The lack of physical activity among modern people has been a serious problem in many nations. The wonder app tries to fix this problem with our unique approach to walking exercises.
 
-So we added several gamification techniques to help users enjoy walking in their daily lives. The user can make a habit of doing walking exercises and be motivated by watching his or her tier rise.
+We added some gamification feature to help users enjoy walking in their daily lives. The user is encouraged to walk on daily basis, through various motivations and game-like mechanics we provide.
 
-In addition, there is a function that connects volunteer organizations and users so that they can participate in various volunteer activities that can be done while walking. For example, there are volunteer activities to take a walk with dogs at an abandoned dog shelter or lunch box delivery services for the elderly living alone.
-
+In addition, we connect local volunteering organizations with users so that they can participate in various volunteer activities that involves some 'walking' in the progress. For example, there are volunteer activities to take a walk with dogs at a dog shelter or lunch box delivery services for the elderly living alone. This way, walking is not just a daily experience, but also a way to help others and contribute to society.
 
 # App Demo
 
