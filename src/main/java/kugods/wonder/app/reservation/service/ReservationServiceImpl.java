@@ -1,8 +1,5 @@
 package kugods.wonder.app.reservation.service;
 
-import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import kugods.wonder.app.common.exception.GeneralException;
 import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.member.exception.MemberDoesNotExistException;
 import kugods.wonder.app.member.repository.MemberRepository;
@@ -12,30 +9,24 @@ import kugods.wonder.app.reservation.entity.VoluntaryWork;
 import kugods.wonder.app.reservation.exception.DuplicatedReservationException;
 import kugods.wonder.app.reservation.exception.ReservationDoesNotExistException;
 import kugods.wonder.app.reservation.exception.VoluntaryWorkDoesNotExistException;
+import kugods.wonder.app.reservation.repository.ReservationCustomRepository;
 import kugods.wonder.app.reservation.repository.ReservationRepository;
 import kugods.wonder.app.reservation.repository.VoluntaryWorkRepository;
-import kugods.wonder.app.walk.repository.WalkRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.querydsl.core.types.ExpressionUtils.count;
-import static kugods.wonder.app.reservation.entity.QReservation.reservation;
-import static kugods.wonder.app.reservation.entity.QVoluntaryWork.voluntaryWork;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
 
-    private final JPAQueryFactory jpaQueryFactory;
     private final ReservationRepository reservationRepository;
-    private final WalkRepository walkRepository;
+    private final ReservationCustomRepository reservationCustomRepository;
     private final VoluntaryWorkRepository voluntaryWorkRepository;
     private final MemberRepository memberRepository;
 
@@ -71,33 +62,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private List<ReservationResponse> getReservationList() {
-        return jpaQueryFactory
-                .select(Projections.constructor(ReservationResponse.class,
-                        voluntaryWork.voluntaryWorkId,
-                        voluntaryWork.walk.walkId,
-                        voluntaryWork.startDate,
-                        voluntaryWork.startTime,
-                        voluntaryWork.endTime,
-                        voluntaryWork.specificAddress,
-                        voluntaryWork.maxPeopleNumber,
-                        count(reservation.reservationId),
-                        voluntaryWork.active
-                ))
-                .from(voluntaryWork)
-                .join(reservation).on(voluntaryWork.eq(reservation.voluntaryWork))
-                .groupBy(voluntaryWork.voluntaryWorkId)
-                .fetch();
+        return reservationCustomRepository.getReservationList();
     }
 
     private List<MyReservationInfo> getMyReservations(String email) {
-        return jpaQueryFactory.
-                select(Projections.constructor(MyReservationInfo.class,
-                        voluntaryWork.voluntaryWorkId,
-                        reservation.reservationId))
-                .from(voluntaryWork)
-                .join(reservation).on(voluntaryWork.eq(reservation.voluntaryWork))
-                .where(reservation.member.email.eq(email))
-                .fetch();
+        return reservationCustomRepository.getMyReservations(email);
     }
 
     @Override
