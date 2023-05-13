@@ -3,6 +3,10 @@
 
 Project to participate in 2023 google solution challenge
 
+## Top 100 finalist 
+![image](https://github.com/KUGODS-Wonder/Wonder-Backend/assets/83508073/f9f498e8-1549-4dab-85f7-e2e4ba1946f5)
+We made it!!
+
 # Member
 Chanho Park                     | Keo Kim    | Boyoung Kim | SeoKyung Baek |
 |------------------------|------------|-------------|---------------|
