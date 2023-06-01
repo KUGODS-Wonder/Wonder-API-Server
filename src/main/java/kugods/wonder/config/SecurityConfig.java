@@ -55,6 +55,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
+                .antMatchers("/chat/**", "/ws/**").permitAll()
                 .antMatchers("/login/getGoogleAuthUrl", "/login/oauth2/code/google").permitAll()
                 .antMatchers("/api/**").hasRole("USER")
                 .anyRequest().denyAll()
