@@ -1,13 +1,11 @@
 package kugods.wonder.app.member.service;
 
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import kugods.wonder.app.common.constant.ErrorCode;
 import kugods.wonder.app.common.exception.GeneralException;
 import kugods.wonder.app.member.dto.MemberProfileResponse;
 import kugods.wonder.app.member.dto.TierInfo;
 import kugods.wonder.app.member.dto.UserWalkingRecord;
+import kugods.wonder.app.member.repository.MemberCustomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,17 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kugods.wonder.app.member.entity.QMember.member;
-import static kugods.wonder.app.record.entity.QCompletion.completion;
-import static kugods.wonder.app.record.entity.QTier.tier;
-import static kugods.wonder.app.walk.entity.QWalk.walk;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    private final JPAQueryFactory jpaQueryFactory;
+    private final MemberCustomRepository memberCustomRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -55,19 +48,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private List<UserWalkingRecord> getMemberLocalRanking(MemberProfileResponse profile) {
-        List<UserWalkingRecord> localRanking = jpaQueryFactory
-                .select(Projections.constructor(UserWalkingRecord.class,
-                        member.memberId,
-                        member.name,
-                        walk.pathDistance.sum().coalesce(0.0).as("totalDistance")
-                ))
-                .from(member)
-                .leftJoin(completion).on(member.eq(completion.member))
-                .leftJoin(walk).on(walk.eq(completion.walk))
-                .where(member.address.eq(profile.getAddress()))
-                .groupBy(member.memberId)
-                .orderBy(Expressions.numberPath(Double.class, "totalDistance").desc())
-                .fetch();
+        List<UserWalkingRecord> localRanking = memberCustomRepository.getLocalRanking(profile);
 
         return localRanking.stream()
                 .map(record -> new UserWalkingRecord(
@@ -87,33 +68,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private TierInfo getTierInfo(MemberProfileResponse profile) {
-        return jpaQueryFactory
-                .select(Projections.constructor(TierInfo.class,
-                        tier.name,
-                        tier.minPointToUpgrade
-                ))
-                .from(tier)
-                .where(tier.minPointToUpgrade.goe(profile.getTotalPoint()))
-                .orderBy(tier.minPointToUpgrade.asc())
-                .limit(1)
-                .fetchOne();
+        return memberCustomRepository.getTierInfo(profile);
     }
 
     private MemberProfileResponse getProfileByEmail(String email) {
-        return jpaQueryFactory
-                .select(Projections.constructor(MemberProfileResponse.class,
-                        member.memberId,
-                        member.name,
-                        member.email,
-                        member.address,
-                        walk.point.sum().coalesce(0).as("totalPoint"),
-                        walk.pathDistance.sum().coalesce(0.0).as("totalDistance"),
-                        completion.timeRecord.sum().coalesce(0).as("totalWalkingTime")
-                ))
-                .from(member)
-                .leftJoin(completion).on(member.eq(completion.member))
-                .leftJoin(walk).on(walk.eq(completion.walk))
-                .where(member.email.eq(email))
-                .fetchOne();
+        return memberCustomRepository.getMemberProfile(email);
     }
 }
