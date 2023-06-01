@@ -1,53 +1,84 @@
 package kugods.wonder.app.chat.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kugods.wonder.app.chat.domain.ChatRoom;
-import lombok.Data;
+import kugods.wonder.app.chat.dto.ChatRoom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.*;
 
 @Slf4j
-@Data
 @Service
 public class ChatService {
-    private final ObjectMapper mapper;
-    private Map<String, ChatRoom> chatRooms;
+
+    private Map<String, ChatRoom> chatRoomMap;
 
     @PostConstruct
     private void init() {
-        chatRooms = new LinkedHashMap<>();
+        chatRoomMap = new LinkedHashMap<>();
     }
 
     public List<ChatRoom> findAllRoom(){
-        return new ArrayList<>(chatRooms.values());
+        return new ArrayList<>(chatRoomMap.values());
     }
 
     public ChatRoom findRoomById(String roomId){
-        return chatRooms.get(roomId);
+        return getChatRoom(roomId);
     }
 
-    public ChatRoom createRoom(String name) {
-        String roomId = UUID.randomUUID().toString();
-        ChatRoom room = ChatRoom.builder()
-                .roomId(roomId)
-                .name(name)
-                .build();
-
-        chatRooms.put(roomId, room);
-        return room;
+    public ChatRoom createChatRoom(String roomName){
+        ChatRoom chatRoom = new ChatRoom().create(roomName);
+        chatRoomMap.put(chatRoom.getRoomId(), chatRoom);
+        return chatRoom;
     }
 
-    public <T> void sendMessage(WebSocketSession session, T message) {
-        try{
-            session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
+    public void plusUserCnt(String roomId){
+        modifyUserCount(roomId, 1);
+    }
+
+    public void minusUserCnt(String roomId){
+        modifyUserCount(roomId, -1);
+    }
+
+    public String addUser(String roomId, String userName){
+        ChatRoom room = getChatRoom(roomId);
+        String userUUID = UUID.randomUUID().toString();
+        room.getUserlist().put(userUUID, userName);
+        return userUUID;
+    }
+
+    public String isDuplicateName(String roomId, String username){
+        ChatRoom room = getChatRoom(roomId);
+        String tmp = username;
+
+        while(room.getUserlist().containsValue(tmp)){
+            int ranNum = (int) (Math.random()*100)+1;
+            tmp = username+ranNum;
         }
+
+        return tmp;
+    }
+
+    public void delUser(String roomId, String userUUID){
+        ChatRoom room = getChatRoom(roomId);
+        room.getUserlist().remove(userUUID);
+    }
+
+    public String getUserName(String roomId, String userUUID){
+        ChatRoom room = getChatRoom(roomId);
+        return room.getUserlist().get(userUUID);
+    }
+
+    public List<String> getUserList(String roomId){
+        return new ArrayList<>(getChatRoom(roomId).getUserlist().values());
+    }
+
+    private ChatRoom getChatRoom(String roomId){
+        return chatRoomMap.get(roomId);
+    }
+
+    private void modifyUserCount(String roomId, int count){
+        ChatRoom room = getChatRoom(roomId);
+        room.setUserCount(room.getUserCount() + count);
     }
 }
