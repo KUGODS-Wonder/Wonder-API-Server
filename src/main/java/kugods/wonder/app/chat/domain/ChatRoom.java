@@ -1,40 +1,60 @@
 package kugods.wonder.app.chat.domain;
 
+import lombok.*;
 
-import kugods.wonder.app.chat.dto.ChatDto;
-import kugods.wonder.app.chat.service.ChatService;
-import lombok.Builder;
-import lombok.Data;
-import org.springframework.web.socket.WebSocketSession;
-
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
+@Builder
 public class ChatRoom {
     private String roomId;
-    private String name;
-    private Set<WebSocketSession> sessions = new HashSet<>();
+    private String roomName;
+    private long userCount;
+    private HashMap<String, String> userList = new HashMap<>();
 
-    @Builder
-    public ChatRoom(String roomId, String name){
-        this.roomId = roomId;
-        this.name = name;
+    public static ChatRoom create(String roomName) {
+        return ChatRoom.builder()
+                .roomId(UUID.randomUUID().toString())
+                .roomName(roomName)
+                .build();
     }
 
-    public void handleAction(WebSocketSession session, ChatDto message, ChatService service) {
-        if (message.getType().equals(ChatDto.MessageType.ENTER)) {
-            sessions.add(session);
-            message.setMessage(message.getSender() + " 님이 입장하셨습니다");
-            sendMessage(message, service);
-            return;
+    public void incrementUserCount() {
+        userCount++;
+    }
+
+    public void decrementUserCount() {
+        userCount--;
+    }
+
+    public String addUser(String userName) {
+        String userUUID = UUID.randomUUID().toString();
+        userList.put(userUUID, userName);
+
+        return userUUID;
+    }
+
+    public String generateNonDuplicateName(String username) {
+        String newName = username;
+
+        while (userList.containsValue(newName)) {
+            int ranNum = (int) (Math.random() * 100) + 1;
+
+            newName = username + ranNum;
         }
 
-        message.setMessage(message.getMessage());
-        sendMessage(message, service);
+        return newName;
     }
 
-    public <T> void sendMessage(T message, ChatService service) {
-        sessions.parallelStream().forEach(session -> service.sendMessage(session, message));
+    public void removeUser(String userUUID) {
+        userList.remove(userUUID);
+    }
+
+    public String getUserName(String userUUID) {
+        return userList.get(userUUID);
+    }
+
+    public List<String> getUserList() {
+        return new ArrayList<>(userList.values());
     }
 }
