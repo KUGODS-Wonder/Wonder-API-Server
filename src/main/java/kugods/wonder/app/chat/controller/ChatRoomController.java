@@ -21,9 +21,9 @@ public class ChatRoomController {
     private final ChatService chatService;
 
     @GetMapping
-    public String goChatRoom(Model model) {
-        model.addAttribute("list", chatService.findAllRoom());
-        log.info("SHOW ALL ChatList {}", chatService.findAllRoom());
+    public String displayChatRoom(Model model) {
+        model.addAttribute("list", chatService.getAllRooms());
+        log.info("SHOW ALL ChatList {}", chatService.getAllRooms());
 
         return "roomlist";
     }
@@ -38,9 +38,9 @@ public class ChatRoomController {
     }
 
     @GetMapping("/detail")
-    public String roomDetail(Model model, String roomId) {
+    public String getRoomDetail(Model model, String roomId) {
         log.info("roomId {}", roomId);
-        model.addAttribute("room", chatService.findRoomById(roomId));
+        model.addAttribute("room", chatService.getRoomById(roomId));
 
         return "chatroom";
     }

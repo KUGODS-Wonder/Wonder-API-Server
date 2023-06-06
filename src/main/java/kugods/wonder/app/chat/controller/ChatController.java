@@ -28,9 +28,9 @@ public class ChatController {
 
     @MessageMapping("/chat/enterUser")
     public void enterUser(@Payload ChatDto chat, SimpMessageHeaderAccessor headerAccessor) {
-        chatService.plusUserCnt(chat.getRoomId());
+        chatService.incrementUserCount(chat.getRoomId());
 
-        String userUUID = chatService.addUser(chat.getRoomId(), chat.getSender());
+        String userUUID = chatService.addUserToRoom(chat.getRoomId(), chat.getSender());
 
         headerAccessor.getSessionAttributes().put("userUUID", userUUID);
         headerAccessor.getSessionAttributes().put("roomId", chat.getRoomId());
@@ -49,7 +49,7 @@ public class ChatController {
     }
 
     @EventListener
-    public void webSocketDisconnectListener(SessionDisconnectEvent event) {
+    public void handleWebSocketDisconnect(SessionDisconnectEvent event) {
         log.info("DisConnEvent {}", event);
 
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
@@ -59,10 +59,10 @@ public class ChatController {
 
         log.info("headAccessor {}", headerAccessor);
 
-        chatService.minusUserCnt(roomId);
+        chatService.decrementUserCount(roomId);
 
         String username = chatService.getUserName(roomId, userUUID);
-        chatService.delUser(roomId, userUUID);
+        chatService.removeUserFromRoom(roomId, userUUID);
 
         if (username != null) {
             log.info("User Disconnected : " + username);
@@ -79,14 +79,14 @@ public class ChatController {
 
     @GetMapping("/chat/userlist")
     @ResponseBody
-    public List<String> userList(String roomId) {
+    public List<String> getUserList(String roomId) {
 
-        return chatService.getUserList(roomId);
+        return chatService.getAllUsersInRoom(roomId);
     }
 
     @GetMapping("/chat/duplicateName")
     @ResponseBody
-    public String isDuplicateName(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {
-        return chatService.isDuplicateName(roomId, username);
+    public String getUniqueUsername(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {
+        return chatService.createUniqueUserName(roomId, username);
     }
 }
