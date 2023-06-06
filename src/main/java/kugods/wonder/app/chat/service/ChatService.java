@@ -14,71 +14,67 @@ public class ChatService {
     private Map<String, ChatRoom> chatRoomMap;
 
     @PostConstruct
-    private void init() {
-        chatRoomMap = new LinkedHashMap<>();
+    private void initializeChatRoomMap() {
+        this.chatRoomMap = new LinkedHashMap<>();
     }
 
-    public List<ChatRoom> findAllRoom(){
-        return new ArrayList<>(chatRoomMap.values());
+    public List<ChatRoom> getAllRooms() {
+        return new ArrayList<>(this.chatRoomMap.values());
     }
 
-    public ChatRoom findRoomById(String roomId){
-        return getChatRoom(roomId);
+    public ChatRoom getRoomById(String roomId){
+        return this.chatRoomMap.get(roomId);
     }
 
     public ChatRoom createChatRoom(String roomName){
-        ChatRoom chatRoom = new ChatRoom().create(roomName);
-        chatRoomMap.put(chatRoom.getRoomId(), chatRoom);
-        return chatRoom;
+        ChatRoom newChatRoom = new ChatRoom().create(roomName);
+        this.chatRoomMap.put(newChatRoom.getRoomId(), newChatRoom);
+        return newChatRoom;
     }
 
-    public void plusUserCnt(String roomId){
-        modifyUserCount(roomId, 1);
+    public void incrementUserCount(String roomId) {
+        updateUserCount(roomId, 1);
     }
 
-    public void minusUserCnt(String roomId){
-        modifyUserCount(roomId, -1);
+    public void decrementUserCount(String roomId) {
+        updateUserCount(roomId, -1);
     }
 
-    public String addUser(String roomId, String userName){
-        ChatRoom room = getChatRoom(roomId);
+    public String addUserToRoom(String roomId, String userName){
+        ChatRoom room = getRoomById(roomId);
         String userUUID = UUID.randomUUID().toString();
-        room.getUserlist().put(userUUID, userName);
+        room.getUserList().put(userUUID, userName);
         return userUUID;
     }
 
-    public String isDuplicateName(String roomId, String username){
-        ChatRoom room = getChatRoom(roomId);
-        String tmp = username;
+    public String createUniqueUserName(String roomId, String userName) {
+        ChatRoom room = getRoomById(roomId);
+        String uniqueUserName = userName;
 
-        while(room.getUserlist().containsValue(tmp)){
-            int ranNum = (int) (Math.random()*100)+1;
-            tmp = username+ranNum;
+        while(room.getUserList().containsValue(uniqueUserName)) {
+            int randomNum = new Random().nextInt(100) + 1;
+            uniqueUserName = userName + randomNum;
         }
 
-        return tmp;
+        return uniqueUserName;
     }
 
-    public void delUser(String roomId, String userUUID){
-        ChatRoom room = getChatRoom(roomId);
-        room.getUserlist().remove(userUUID);
+    public void removeUserFromRoom(String roomId, String userUUID) {
+        ChatRoom room = getRoomById(roomId);
+        room.getUserList().remove(userUUID);
     }
 
-    public String getUserName(String roomId, String userUUID){
-        ChatRoom room = getChatRoom(roomId);
-        return room.getUserlist().get(userUUID);
+    public String getUserName(String roomId, String userUUID) {
+        ChatRoom room = getRoomById(roomId);
+        return room.getUserList().get(userUUID);
     }
 
-    public List<String> getUserList(String roomId){
-        return new ArrayList<>(getChatRoom(roomId).getUserlist().values());
+    public List<String> getAllUsersInRoom(String roomId){
+        return new ArrayList<>(getRoomById(roomId).getUserList().values());
     }
 
-    private ChatRoom getChatRoom(String roomId){
-        return chatRoomMap.get(roomId);
-    }
-
-    private void modifyUserCount(String roomId, int count){
-        ChatRoom room = getChatRoom(roomId);
+    private void updateUserCount(String roomId, int count) {
+        ChatRoom room = getRoomById(roomId);
         room.setUserCount(room.getUserCount() + count);
     }
 }
