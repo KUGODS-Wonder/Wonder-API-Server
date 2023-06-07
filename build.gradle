@@ -53,6 +53,10 @@ dependencies {
 	implementation 'org.webjars:stomp-websocket:2.3.4'
 	// gson
 	implementation 'com.google.code.gson:gson:2.9.0'
+
+	// RabbitMQ
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'org.springframework.boot:spring-boot-starter-reactor-netty:2.6.4'
 }
 
 tasks.named('test') {
