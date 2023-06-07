@@ -13,7 +13,7 @@ public class ChatRoom {
     private long userCount;
     private Map<String, String> userlist = new HashMap<>();
 
-    public static ChatRoom create(String roomName){
+    public static ChatRoom createRoom(String roomName){
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.roomId = UUID.randomUUID().toString();
         chatRoom.roomName = roomName;

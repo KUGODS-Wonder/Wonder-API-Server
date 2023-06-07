@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+import static kugods.wonder.app.chat.dto.ChatRoom.createRoom;
+
 @Slf4j
 @Service
 public class ChatService {
@@ -22,12 +24,12 @@ public class ChatService {
         return new ArrayList<>(this.chatRoomMap.values());
     }
 
-    public ChatRoom getRoomById(String roomId){
+    public ChatRoom getRoomById(String roomId) {
         return this.chatRoomMap.get(roomId);
     }
 
-    public ChatRoom createChatRoom(String roomName){
-        ChatRoom newChatRoom = new ChatRoom().create(roomName);
+    public ChatRoom createChatRoom(String roomName) {
+        ChatRoom newChatRoom = createRoom(roomName);
         this.chatRoomMap.put(newChatRoom.getRoomId(), newChatRoom);
         return newChatRoom;
     }
@@ -40,10 +42,10 @@ public class ChatService {
         updateUserCount(roomId, -1);
     }
 
-    public String addUserToRoom(String roomId, String userName){
+    public String addUserToRoom(String roomId, String userName) {
         ChatRoom room = getRoomById(roomId);
         String userUUID = UUID.randomUUID().toString();
-        room.getUserList().put(userUUID, userName);
+        room.getUserlist().put(userUUID, userName);
         return userUUID;
     }
 
@@ -51,7 +53,7 @@ public class ChatService {
         ChatRoom room = getRoomById(roomId);
         String uniqueUserName = userName;
 
-        while(room.getUserList().containsValue(uniqueUserName)) {
+        while (room.getUserlist().containsValue(uniqueUserName)) {
             int randomNum = new Random().nextInt(100) + 1;
             uniqueUserName = userName + randomNum;
         }
@@ -61,16 +63,16 @@ public class ChatService {
 
     public void removeUserFromRoom(String roomId, String userUUID) {
         ChatRoom room = getRoomById(roomId);
-        room.getUserList().remove(userUUID);
+        room.getUserlist().remove(userUUID);
     }
 
     public String getUserName(String roomId, String userUUID) {
         ChatRoom room = getRoomById(roomId);
-        return room.getUserList().get(userUUID);
+        return room.getUserlist().get(userUUID);
     }
 
-    public List<String> getAllUsersInRoom(String roomId){
-        return new ArrayList<>(getRoomById(roomId).getUserList().values());
+    public List<String> getAllUsersInRoom(String roomId) {
+        return new ArrayList<>(getRoomById(roomId).getUserlist().values());
     }
 
     private void updateUserCount(String roomId, int count) {
