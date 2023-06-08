@@ -47,9 +47,9 @@
             event.preventDefault();
         },
         onConnected: function () {
-            this.stompClient.subscribe('/sub/chatroom/detail/' + this.roomId, this.onMessageReceived.bind(this));
+            this.stompClient.subscribe(`/exchange/chat.exchange/room.${this.roomId}`, this.onMessageReceived.bind(this));
 
-            this.stompClient.send("/pub/chat/enterUser", {},
+            this.stompClient.send("/pub/chat.enter", {},
                 JSON.stringify({
                     "roomId": this.roomId,
                     sender: this.username,
@@ -106,17 +106,19 @@
                     type: 'TALK'
                 };
 
-                this.stompClient.send("/pub/chat/sendMessage", {}, JSON.stringify(chatMessage));
+                this.stompClient.send("/pub/chat.sendMessage", {}, JSON.stringify(chatMessage));
                 this.messageInput.value = '';
             }
             event.preventDefault();
         },
         onMessageReceived: function (payload) {
             var chat = JSON.parse(payload.body);
+            console.log("메시지 받음");
 
             var messageElement = document.createElement('li');
 
             if (chat.type === 'ENTER') {
+                console.log("입장");
                 messageElement.classList.add('event-message');
                 chat.content = chat.sender + chat.message;
                 this.getUserList();
@@ -128,6 +130,7 @@
 
             } else {
                 messageElement.classList.add('chat-message');
+                console.log("채팅");
 
                 var avatarElement = document.createElement('i');
                 var avatarText = document.createTextNode(chat.sender[0]);
