@@ -12,6 +12,9 @@ Chanho Park                     | Keo Kim    | Boyoung Kim | SeoKyung Baek |
 |------------------------|------------|-------------|---------------|
 | - Lead <br/> - Backend | - Frontend | - Frontend  | - AI          |
 
+### Team Notion Link
+[Team Notion](https://grateful-ermine-27f.notion.site/12-Wonder-6379a19d73f94ab29ba1b3424992b110)
+
 # UN-SDGs that our solution solving for
 ## Goal 3. Good Health and Well-Being
 <img src="https://user-images.githubusercontent.com/83508073/228183331-9a51e851-0ae2-474e-8511-6ae086b67a1d.png">
