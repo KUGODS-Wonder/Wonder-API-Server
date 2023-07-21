@@ -4,7 +4,11 @@
 Project to participate in 2023 google solution challenge
 
 ## Top 10 finalist 
+<img width="411" alt="badge" src="https://github.com/KUGODS-Wonder/Wonder-Backend/assets/83508073/665b99f3-b4d1-4703-91ee-9c34fd917895">
+
 ![image](https://github.com/KUGODS-Wonder/Wonder-Backend/assets/83508073/47902249-8812-4f28-b63b-49972788b7e1)
+
+
 We made it!!
 
 # Member
