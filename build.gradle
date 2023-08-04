@@ -58,7 +58,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	testImplementation 'org.springframework.amqp:spring-rabbit-test'
 	implementation 'org.springframework.boot:spring-boot-starter-reactor-netty:2.6.4'
+	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	testImplementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
 
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
 }
