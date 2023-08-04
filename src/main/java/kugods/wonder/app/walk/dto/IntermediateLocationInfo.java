@@ -2,6 +2,7 @@ package kugods.wonder.app.walk.dto;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
@@ -9,7 +10,9 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class IntermediateLocationInfo {
+@ToString
+public class IntermediateLocationInfo implements Serializable {
+    private static final long serialVersionUID = 43567789L;
 
     private Long intermediateLocationId;
 

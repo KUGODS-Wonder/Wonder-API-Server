@@ -2,6 +2,7 @@ package kugods.wonder.app.walk.dto;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -10,7 +11,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WalkResponse {
+@ToString
+public class WalkResponse implements Serializable {
+    private static final long serialVersionUID = 1761789L;
     public WalkResponse(
             Long walkId,
             String title,

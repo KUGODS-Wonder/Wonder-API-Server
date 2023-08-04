@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserLocation {
 
     private BigDecimal latitude;
