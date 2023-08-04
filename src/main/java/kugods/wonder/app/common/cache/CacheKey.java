@@ -1,7 +1,22 @@
 package kugods.wonder.app.common.cache;
 
-public class CacheKey {
-    public static final int DEFAULT_EXPIRE_SEC = 60;
-    public static final String ZONE = "zone";
-    public static final int ZONE_EXPIRE_SEC = 60 * 60;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public enum CacheKey {
+    LONG("long", 60 * 60),
+    SHORT("short", 60 * 1),
+    MEDIUM("medium", 60 * 5);
+
+    private final String key;
+    private final int expiryTimeSec;
+
+    public String getKey() {
+        return key;
+    }
+
+    public int getExpiryTimeSec() {
+        return expiryTimeSec;
+    }
 }

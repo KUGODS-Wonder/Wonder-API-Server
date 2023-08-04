@@ -18,8 +18,10 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableCaching
@@ -50,27 +52,27 @@ public class RedisConfig {
 
     @Bean
     public CacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory){
-        RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
+        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .disableCachingNullValues()
-                .entryTtl(Duration.ofSeconds(CacheKey.DEFAULT_EXPIRE_SEC))
                 .computePrefixWith(CacheKeyPrefix.simple())
-                .serializeKeysWith( // key serializer - String
+                .serializeKeysWith(
                         RedisSerializationContext.SerializationPair
                                 .fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith( // value serializer - JSON
+                .serializeValuesWith(
                         RedisSerializationContext.SerializationPair
                                 .fromSerializer(new GenericJackson2JsonRedisSerializer()));
 
-        Map<String, RedisCacheConfiguration> cacheConfiguration = new HashMap<>();
-        cacheConfiguration.put(
-                CacheKey.ZONE,
-                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(CacheKey.ZONE_EXPIRE_SEC))
-        );
+        Map<String, RedisCacheConfiguration> cacheConfigurations = Arrays.stream(CacheKey.values())
+                .collect(Collectors.toMap(
+                        CacheKey::getKey,
+                        cacheKey -> RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.ofSeconds(cacheKey.getExpiryTimeSec()))
+                ));
 
         return RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(redisConnectionFactory)
-                .cacheDefaults(configuration)
-                .withInitialCacheConfigurations(cacheConfiguration)
+                .cacheDefaults(defaultCacheConfig)
+                .withInitialCacheConfigurations(cacheConfigurations)
                 .build();
     }
 }
