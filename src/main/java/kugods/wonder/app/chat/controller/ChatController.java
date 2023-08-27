@@ -52,11 +52,6 @@ public class ChatController {
         template.convertAndSend(CHAT_EXCHANGE_NAME, "room." + chat.getRoomId(), chat);
     }
 
-    @RabbitListener(queues = CHAT_QUEUE_NAME)
-    public void receive(ChatDto chat){
-        System.out.println("received : " + chat.getMessage());
-    }
-
     @EventListener
     public void handleWebSocketDisconnect(SessionDisconnectEvent event) {
         log.info("DisConnEvent {}", event);
