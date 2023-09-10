@@ -14,6 +14,7 @@ import kugods.wonder.app.reservation.repository.ReservationRepository;
 import kugods.wonder.app.reservation.repository.VoluntaryWorkRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +70,7 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationCustomRepository.getMyReservations(email);
     }
 
+    @CacheEvict(value = "my_reservations", key = "#request.email")
     @Override
     @Transactional
     public MakeReservationsResponse makeReservations(ReservationRequest request) {
@@ -90,9 +92,10 @@ public class ReservationServiceImpl implements ReservationService {
                 .build();
     }
 
+    @CacheEvict(value = "my_reservations", key = "#email")
     @Override
     @Transactional
-    public MakeReservationsResponse cancelReservations(Long reservationId) {
+    public MakeReservationsResponse cancelReservations(Long reservationId, String email) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(ReservationDoesNotExistException::new);
         reservationRepository.delete(reservation);

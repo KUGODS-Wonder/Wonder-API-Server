@@ -5,8 +5,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kugods.wonder.app.common.cache.CacheKey;
 import kugods.wonder.app.walk.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ public class WalkCustomRepositoryImpl implements WalkCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    @Cacheable(value = "walks_by_user_location", key = "{#request, #location}")
     @Override
     @Transactional(readOnly = true)
     public List<WalkResponse> getWalks(WalkListRequest request, UserLocation location) {
@@ -51,6 +54,7 @@ public class WalkCustomRepositoryImpl implements WalkCustomRepository {
                 .fetch();
     }
 
+    @Cacheable(value = "walk_info_by_user_location", key = "{#walkId, #location}")
     @Override
     @Transactional(readOnly = true)
     public WalkResponse getWalkInfo(Long walkId, UserLocation location) {
@@ -101,6 +105,7 @@ public class WalkCustomRepositoryImpl implements WalkCustomRepository {
                 );
     }
 
+    @Cacheable(value = "tag_info_of_walk", key = "#walkId.toString()")
     @Override
     @Transactional(readOnly = true)
     public List<TagInfo> getTagList(Long walkId) {
@@ -143,6 +148,7 @@ public class WalkCustomRepositoryImpl implements WalkCustomRepository {
                 );
     }
 
+    @Cacheable(value = "intermediate_location_of_walk", key = "#walkId.toString()")
     @Override
     @Transactional(readOnly = true)
     public List<IntermediateLocationInfo> getIntermediateLocationList(Long walkId) {

@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kugods.wonder.app.reservation.dto.MyReservationInfo;
 import kugods.wonder.app.reservation.dto.ReservationResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
                 .fetch();
     }
 
+    @Cacheable(value = "my_reservations", key = "#email")
     @Override
     public List<MyReservationInfo> getMyReservations(String email) {
         return jpaQueryFactory.
