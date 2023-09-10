@@ -48,10 +48,12 @@ public class ReservationController {
 
     @DeleteMapping("/cancel/{reservationId}")
     public ApiDataResponse<MakeReservationsResponse> cancelReservations(
+            Authentication auth,
             @PathVariable("reservationId") Long reservationId
     ) {
+        String email = auth.getName();
         return ApiDataResponse.of(
-                reservationService.cancelReservations(reservationId)
+                reservationService.cancelReservations(reservationId, email)
         );
     }
 }

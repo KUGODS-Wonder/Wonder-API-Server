@@ -14,5 +14,5 @@ public interface ReservationService {
 
     MakeReservationsResponse makeReservations(ReservationRequest request);
 
-    MakeReservationsResponse cancelReservations(Long reservationId);
+    MakeReservationsResponse cancelReservations(Long reservationId, String email);
 }

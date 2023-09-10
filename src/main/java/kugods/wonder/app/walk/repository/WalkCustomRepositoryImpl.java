@@ -29,7 +29,7 @@ public class WalkCustomRepositoryImpl implements WalkCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @Cacheable(value = "medium", key = "{#request, #location}")
+    @Cacheable(value = "walks_by_user_location", key = "{#request, #location}")
     @Override
     @Transactional(readOnly = true)
     public List<WalkResponse> getWalks(WalkListRequest request, UserLocation location) {
@@ -54,7 +54,7 @@ public class WalkCustomRepositoryImpl implements WalkCustomRepository {
                 .fetch();
     }
 
-    @Cacheable(value = "medium", key = "{#walkId, #location}")
+    @Cacheable(value = "walk_info_by_user_location", key = "{#walkId, #location}")
     @Override
     @Transactional(readOnly = true)
     public WalkResponse getWalkInfo(Long walkId, UserLocation location) {
@@ -78,7 +78,6 @@ public class WalkCustomRepositoryImpl implements WalkCustomRepository {
                 .fetchOne();
     }
 
-    @Cacheable(value = "long")
     @Override
     @Transactional(readOnly = true)
     public Map<Long, List<TagInfo>> getTagMap(List<WalkResponse> walks) {
@@ -106,7 +105,7 @@ public class WalkCustomRepositoryImpl implements WalkCustomRepository {
                 );
     }
 
-    @Cacheable(value = "long", key = "#walkId.toString()")
+    @Cacheable(value = "tag_info_of_walk", key = "#walkId.toString()")
     @Override
     @Transactional(readOnly = true)
     public List<TagInfo> getTagList(Long walkId) {
@@ -120,7 +119,6 @@ public class WalkCustomRepositoryImpl implements WalkCustomRepository {
                 .fetch();
     }
 
-    @Cacheable(value = "long")
     @Override
     @Transactional(readOnly = true)
     public Map<Long, List<IntermediateLocationInfo>> getIntermediateLocationMap(List<WalkResponse> walks) {
@@ -150,7 +148,7 @@ public class WalkCustomRepositoryImpl implements WalkCustomRepository {
                 );
     }
 
-    @Cacheable(value = "long", key = "#walkId.toString()")
+    @Cacheable(value = "intermediate_location_of_walk", key = "#walkId.toString()")
     @Override
     @Transactional(readOnly = true)
     public List<IntermediateLocationInfo> getIntermediateLocationList(Long walkId) {
