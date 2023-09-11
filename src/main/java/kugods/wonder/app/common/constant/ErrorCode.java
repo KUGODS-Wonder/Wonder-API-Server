@@ -21,6 +21,8 @@ public enum ErrorCode {
 
     INTERNAL_ERROR(20000, HttpStatus.INTERNAL_SERVER_ERROR, "Internal error"),
     DATA_ACCESS_ERROR(20001, HttpStatus.INTERNAL_SERVER_ERROR, "Data access error"),
+    BAD_LOCK_IDENTIFIER(20002, HttpStatus.INTERNAL_SERVER_ERROR, "Bad lock identifier"),
+    NOT_AVAILABLE_REDISSON_LOCK(20003, HttpStatus.INTERNAL_SERVER_ERROR, "Not available Redisson lock"),
 
     NOT_VALID_ROLE(1000, HttpStatus.BAD_REQUEST, "Invalid role"),
     NOT_VALID_TOKEN(1001, HttpStatus.BAD_REQUEST, "Invalid token"),
@@ -35,7 +37,10 @@ public enum ErrorCode {
     DuPLICATED_RESERVATION(1010, HttpStatus.BAD_REQUEST, "Duplicated reservation"),
     RESERVATION_NOT_EXIST(1011, HttpStatus.BAD_REQUEST, "Reservation does not exits"),
 
-    INVALID_GOOGLE_TOKEN(1100, HttpStatus.BAD_REQUEST, "Invalid Google Token");
+    INVALID_GOOGLE_TOKEN(1100, HttpStatus.BAD_REQUEST, "Invalid Google Token"),
+    EXCEED_MAX_PEOPLE_NUMBER(1101, HttpStatus.BAD_REQUEST, "Exceed max people number"),
+    CURRENT_PEOPLE_NUMBER_IS_ZERO(1102, HttpStatus.BAD_REQUEST, "Current people number is zero")
+    ;
 
     private final Integer code;
     private final HttpStatus httpStatus;

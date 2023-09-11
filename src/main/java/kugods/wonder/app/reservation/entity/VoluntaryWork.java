@@ -1,14 +1,13 @@
 package kugods.wonder.app.reservation.entity;
 
-import kugods.wonder.app.common.entity.BaseEntity;
 import kugods.wonder.app.reservation.dto.VoluntaryWorkResponse;
+import kugods.wonder.app.reservation.exception.CurrentPeopleNumberIsZeroException;
+import kugods.wonder.app.reservation.exception.ExceedMaxPeopleNumberException;
 import kugods.wonder.app.walk.entity.Walk;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -48,6 +47,9 @@ public class VoluntaryWork {
     private LocalTime endTime;
 
     @Column(nullable = false)
+    private Integer currentPeopleNumber = 0;
+
+    @Column(nullable = false)
     private Integer maxPeopleNumber;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
@@ -64,6 +66,20 @@ public class VoluntaryWork {
                 .startTime(startTime)
                 .endTime(endTime)
                 .build();
+    }
+
+    public void reserve() {
+        if (this.currentPeopleNumber >= this.maxPeopleNumber) {
+            throw new ExceedMaxPeopleNumberException();
+        }
+        this.currentPeopleNumber++;
+    }
+
+    public void cancel() {
+        if (this.currentPeopleNumber <= 0) {
+            throw new CurrentPeopleNumberIsZeroException();
+        }
+        this.currentPeopleNumber--;
     }
 
 }
