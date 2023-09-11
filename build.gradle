@@ -25,6 +25,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    testImplementation 'org.projectlombok:lombok:1.18.26'
+	testImplementation 'org.projectlombok:lombok:1.18.26'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -63,6 +65,9 @@ dependencies {
 	// Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	testImplementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+
+	// redisson
+	implementation 'org.redisson:redisson-spring-boot-starter:3.18.0'
 
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
 }

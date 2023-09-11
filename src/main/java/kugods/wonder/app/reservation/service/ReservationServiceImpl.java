@@ -1,5 +1,6 @@
 package kugods.wonder.app.reservation.service;
 
+import kugods.wonder.app.common.annotation.RedissonLock;
 import kugods.wonder.app.member.entity.Member;
 import kugods.wonder.app.member.exception.MemberDoesNotExistException;
 import kugods.wonder.app.member.repository.MemberRepository;
@@ -70,28 +71,31 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationCustomRepository.getMyReservations(email);
     }
 
+    @RedissonLock(LockName = "makeReservations", identifier = "VoluntaryWorkId", paramClassType = ReservationRequest.class)
     @CacheEvict(value = "my_reservations", key = "#request.email")
     @Override
     @Transactional
     public MakeReservationsResponse makeReservations(ReservationRequest request) {
         validateReservationDuplication(request.getEmail(), request.getVoluntaryWorkId());
-        Reservation reservation = getReservation(request);
+
+        Member member = memberRepository.findOneByEmail(request.getEmail())
+                .orElseThrow(MemberDoesNotExistException::new);
+        VoluntaryWork voluntaryWork = voluntaryWorkRepository.findById(request.getVoluntaryWorkId())
+                .orElseThrow(VoluntaryWorkDoesNotExistException::new);
+
+        voluntaryWork.reserve();
+        voluntaryWorkRepository.save(voluntaryWork);
+
+        Reservation reservation = Reservation.builder()
+                .member(member)
+                .voluntaryWork(voluntaryWork)
+                .build();
         reservationRepository.save(reservation);
 
         return reservation.toResponse();
     }
 
-    private Reservation getReservation(ReservationRequest request) {
-        Member member = memberRepository.findOneByEmail(request.getEmail())
-                .orElseThrow(MemberDoesNotExistException::new);
-        VoluntaryWork voluntaryWork = voluntaryWorkRepository.findById(request.getVoluntaryWorkId())
-                .orElseThrow(VoluntaryWorkDoesNotExistException::new);
-        return Reservation.builder()
-                .member(member)
-                .voluntaryWork(voluntaryWork)
-                .build();
-    }
-
+    @RedissonLock(LockName = "cancelReservation", identifier = "reservationId")
     @CacheEvict(value = "my_reservations", key = "#email")
     @Override
     @Transactional
@@ -99,6 +103,10 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(ReservationDoesNotExistException::new);
         reservationRepository.delete(reservation);
+
+        VoluntaryWork voluntaryWork = reservation.getVoluntaryWork();
+        voluntaryWork.cancel();
+        voluntaryWorkRepository.save(voluntaryWork);
 
         return reservation.toResponse();
     }
